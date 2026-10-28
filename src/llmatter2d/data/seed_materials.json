@@ -1,0 +1,133 @@
+{
+  "_comment": "Curated seed set of well-known 2D materials for demos and tests. Values are approximate literature numbers; production knowledge bases should be built from the ingested DFT databases (C2DB, MC2D, 2DMatPedia, JARVIS) and from ARPES/Wannier data with full provenance.",
+  "materials": [
+    {
+      "id": "graphene", "name": "graphene", "formula": "C",
+      "prototype": {"kind": "honeycomb", "a": 2.46, "species": ["C", "C"], "buckling": 0.0},
+      "band_gaps": [{"value_eV": 0.0, "method": "DFT-PBE", "location": "K (Dirac point)"}],
+      "dirac_cone": true, "magnetic_state": "NM",
+      "experimentally_realized": true,
+      "tight_binding": {"orbitals": ["C1:pz", "C2:pz"], "t_nn_eV": -2.8,
+                         "source": "literature", "reference": "Castro Neto et al., Rev. Mod. Phys. 81, 109 (2009)"},
+      "arpes": [{"fermi_velocity_m_s": 1.0e6, "k_point": "K",
+                 "notes": "Linear Dirac dispersion; v_F ~ 1e6 m/s",
+                 "reference": "Bostwick et al., Nat. Phys. 3, 36 (2007)"}],
+      "tags": ["Xene", "semimetal", "Dirac", "archimedean:6^3"],
+      "references": ["Novoselov et al., Science 306, 666 (2004)"]
+    },
+    {
+      "id": "hBN", "name": "hexagonal boron nitride", "formula": "BN",
+      "prototype": {"kind": "honeycomb", "a": 2.50, "species": ["B", "N"], "buckling": 0.0},
+      "band_gaps": [
+        {"value_eV": 4.7, "method": "DFT-PBE", "direct": true, "location": "K"},
+        {"value_eV": 6.1, "method": "experiment", "direct": true}
+      ],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "tags": ["insulator", "dielectric", "archimedean:6^3"],
+      "references": ["Elias et al., Nat. Commun. 10, 2639 (2019)"]
+    },
+    {
+      "id": "MoS2-1H", "name": "molybdenum disulfide (1H)", "formula": "MoS2",
+      "prototype": {"kind": "1H-MX2", "a": 3.16, "dz": 1.56, "species": ["Mo", "S"]},
+      "band_gaps": [
+        {"value_eV": 1.7, "method": "DFT-PBE", "direct": true, "location": "K"},
+        {"value_eV": 1.9, "method": "experiment (photoluminescence, optical)", "direct": true, "location": "K"}
+      ],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "arpes": [{"soc_splitting_eV": 0.145, "k_point": "K",
+                 "notes": "Spin-orbit splitting of the top valence band at K",
+                 "reference": "Miwa et al., Phys. Rev. Lett. 114, 046802 (2015)"}],
+      "tags": ["TMD", "semiconductor", "valleytronics"],
+      "references": ["Mak et al., Phys. Rev. Lett. 105, 136805 (2010)",
+                     "Liu et al., Phys. Rev. B 88, 085433 (2013) (three-band TB model)"]
+    },
+    {
+      "id": "MoSe2-1H", "name": "molybdenum diselenide (1H)", "formula": "MoSe2",
+      "prototype": {"kind": "1H-MX2", "a": 3.29, "dz": 1.67, "species": ["Mo", "Se"]},
+      "band_gaps": [{"value_eV": 1.55, "method": "experiment (optical)", "direct": true, "location": "K"}],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "arpes": [{"soc_splitting_eV": 0.18, "k_point": "K",
+                 "notes": "Valence-band spin-orbit splitting at K",
+                 "reference": "Zhang et al., Nat. Nanotechnol. 9, 111 (2014)"}],
+      "tags": ["TMD", "semiconductor", "valleytronics"]
+    },
+    {
+      "id": "WS2-1H", "name": "tungsten disulfide (1H)", "formula": "WS2",
+      "prototype": {"kind": "1H-MX2", "a": 3.15, "dz": 1.57, "species": ["W", "S"]},
+      "band_gaps": [{"value_eV": 2.0, "method": "experiment (optical)", "direct": true, "location": "K"}],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "arpes": [{"soc_splitting_eV": 0.42, "k_point": "K",
+                 "notes": "Large valence-band spin-orbit splitting at K (approximate)"}],
+      "tags": ["TMD", "semiconductor", "valleytronics"]
+    },
+    {
+      "id": "WSe2-1H", "name": "tungsten diselenide (1H)", "formula": "WSe2",
+      "prototype": {"kind": "1H-MX2", "a": 3.28, "dz": 1.68, "species": ["W", "Se"]},
+      "band_gaps": [{"value_eV": 1.65, "method": "experiment (optical)", "direct": true, "location": "K"}],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "arpes": [{"soc_splitting_eV": 0.47, "k_point": "K",
+                 "notes": "Valence-band spin-orbit splitting at K (approximate, ~0.45-0.5 eV reported)"}],
+      "tags": ["TMD", "semiconductor", "valleytronics"]
+    },
+    {
+      "id": "TaS2-1T", "name": "tantalum disulfide (1T)", "formula": "TaS2",
+      "prototype": {"kind": "1T-MX2", "a": 3.36, "dz": 1.47, "species": ["Ta", "S"]},
+      "band_gaps": [],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "tags": ["TMD", "charge-density-wave", "Mott", "correlated"],
+      "notes": "Commensurate sqrt(13)xsqrt(13) 'Star-of-David' CDW at low temperature with a Mott-like gap; the undistorted 1T cell is stored here."
+    },
+    {
+      "id": "phosphorene", "name": "black phosphorene", "formula": "P",
+      "prototype": {"kind": "puckered", "a": 3.30, "b": 4.62, "h": 2.10, "bond": 2.22, "species": ["P"]},
+      "band_gaps": [
+        {"value_eV": 0.9, "method": "DFT-PBE", "direct": true, "location": "Gamma"},
+        {"value_eV": 1.5, "method": "DFT-HSE06", "direct": true, "location": "Gamma"}
+      ],
+      "magnetic_state": "NM", "experimentally_realized": true,
+      "tags": ["Xene-like", "semiconductor", "anisotropic"],
+      "references": ["Liu et al., ACS Nano 8, 4033 (2014)"]
+    },
+    {
+      "id": "silicene", "name": "silicene", "formula": "Si",
+      "prototype": {"kind": "honeycomb", "a": 3.86, "species": ["Si", "Si"], "buckling": 0.44},
+      "band_gaps": [{"value_eV": 0.0015, "method": "DFT (with SOC)", "location": "K", "with_soc": true}],
+      "dirac_cone": true, "soc_gap": 0.0015, "topology": "QSH", "magnetic_state": "NM",
+      "experimentally_realized": true,
+      "tags": ["Xene", "Dirac", "quantum spin Hall", "buckled", "archimedean:6^3"],
+      "references": ["Liu, Feng, Yao, Phys. Rev. Lett. 107, 076802 (2011)",
+                     "Vogt et al., Phys. Rev. Lett. 108, 155501 (2012) (growth on Ag(111))"]
+    },
+    {
+      "id": "germanene", "name": "germanene", "formula": "Ge",
+      "prototype": {"kind": "honeycomb", "a": 4.02, "species": ["Ge", "Ge"], "buckling": 0.64},
+      "band_gaps": [{"value_eV": 0.024, "method": "DFT (with SOC)", "location": "K", "with_soc": true}],
+      "dirac_cone": true, "soc_gap": 0.024, "topology": "QSH", "magnetic_state": "NM",
+      "tags": ["Xene", "Dirac", "quantum spin Hall", "buckled", "archimedean:6^3"],
+      "references": ["Liu, Feng, Yao, Phys. Rev. Lett. 107, 076802 (2011)"]
+    },
+    {
+      "id": "stanene", "name": "stanene", "formula": "Sn",
+      "prototype": {"kind": "honeycomb", "a": 4.67, "species": ["Sn", "Sn"], "buckling": 0.85},
+      "band_gaps": [{"value_eV": 0.1, "method": "DFT (with SOC)", "location": "K", "with_soc": true}],
+      "dirac_cone": true, "soc_gap": 0.1, "topology": "QSH", "magnetic_state": "NM",
+      "tags": ["Xene", "Dirac", "quantum spin Hall", "buckled", "archimedean:6^3"],
+      "references": ["Xu et al., Phys. Rev. Lett. 111, 136804 (2013)"]
+    },
+    {
+      "id": "CrI3", "name": "chromium triiodide", "formula": "CrI3",
+      "band_gaps": [{"value_eV": 1.1, "method": "DFT-PBE"}],
+      "magnetic_state": "FM", "magnetic_moment_muB": 6.0, "curie_temperature_K": 45,
+      "experimentally_realized": true,
+      "tags": ["magnet", "Ising ferromagnet", "semiconductor", "Cr honeycomb"],
+      "notes": "Cr atoms form a honeycomb lattice (edge-sharing CrI6 octahedra); ~3 muB per Cr. Structure not included in the seed file.",
+      "references": ["Huang et al., Nature 546, 270 (2017)"]
+    },
+    {
+      "id": "graphenylene", "name": "graphenylene", "formula": "C",
+      "tags": ["carbon allotrope", "predicted", "archimedean:4.6.12"],
+      "notes": "Predicted 2D carbon allotrope whose carbon network realises the 4.6.12 Archimedean lattice. Listed as an example of an Archimedean-lattice material; properties should be taken from DFT ingestion.",
+      "references": ["arXiv:1908.05092 (Archimedean lattices: flat bands, Dirac fermions, QSH)"]
+    }
+  ]
+}
