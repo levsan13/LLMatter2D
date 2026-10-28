@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use LLMatter2D, please cite it as below."
+title: "LLMatter2D: retrieval-augmented LLM for the analysis and discovery of two-dimensional materials"
+authors:
+  - family-names: Levy
+    given-names: Sergio
+    email: levy@fisica.ufc.br
+version: 0.1.0
+date-released: 2026-10-28
+license: MIT
+repository-code: "https://github.com/levsan13/LLMatter2D"
+keywords:
+  - 2D materials
+  - retrieval-augmented generation
+  - large language models
+  - DFT
+  - ARPES
+  - tight-binding
+  - Archimedean lattices
