@@ -29,3 +29,6 @@ candidates/
 Thumbs.db
 .vscode/
 .idea/
+
+# Overleaf bundle (regenerate with paper/manuscript/make_overleaf_zip.py)
+paper/manuscript/*.zip

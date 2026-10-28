@@ -16,8 +16,22 @@ python paper/reproduce.py --llm lmstudio   # + RAG vs closed-book with the LM St
 | Fig. 2 | The 11 Archimedean tilings, primitive cells and bipartite sublattices | `scripts/fig_archimedean.py` | `figures/archimedean_tilings.{pdf,png}` |
 | Fig. 3 | Nearest-neighbour tight-binding bands of the 11 tilings (flat bands highlighted) | `scripts/fig_archimedean.py` | `figures/archimedean_bands.{pdf,png}` |
 | Table 1 | Sites per cell, coordination, site density, bipartiteness, flat bands, band touchings | `scripts/table_archimedean.py` | `tables/archimedean.{md,tex}` |
-| Table 2 | Retrieval recall@k and MRR | `llmatter2d benchmark` (via `reproduce.py`) | `results/retrieval_seed.{jsonl,md}` |
-| Table 3 | Answer accuracy and citation quality, RAG vs closed-book, per LLM | `reproduce.py --llm <spec>` | `results/answers_<llm>.{jsonl,md}` |
+| Table 2 | Highest-ranked new Archimedean candidates (before DFT) | `scripts/table_candidates.py` | `tables/candidates.{md,tex}` |
+| Benchmark | Retrieval recall@k and MRR | `llmatter2d benchmark` (via `reproduce.py`) | `results/retrieval_seed.{jsonl,md}` |
+| Benchmark | Answer accuracy and citation quality, RAG vs closed-book, per LLM | `reproduce.py --llm <spec>` | `results/answers_<llm>.{jsonl,md}` |
+
+## Manuscript (LaTeX, REVTeX 4.2)
+
+`manuscript/main.tex` and `manuscript/references.bib` hold the provisional draft
+(class option `prmaterials`; change it for another APS journal). Text in red marked
+**Pending** stands for results that do not exist yet. Fig. 1 is drawn with TikZ inside
+`main.tex`; the other figures and the tables are read from `figures/` and `tables/`.
+
+For Overleaf, build a flat bundle and upload it with *New Project -> Upload Project*:
+
+```bash
+python paper/manuscript/make_overleaf_zip.py   # -> paper/manuscript/LLMatter2D_overleaf.zip
+```
 
 ## Status of the results
 

@@ -34,6 +34,7 @@ def main() -> None:
 
     run(str(PAPER / "scripts" / "fig_archimedean.py"))
     run(str(PAPER / "scripts" / "table_archimedean.py"))
+    run(str(PAPER / "scripts" / "table_candidates.py"))
     bench = str(ROOT / "benchmarks" / "seed_questions.jsonl")
     results = PAPER / "results"
     run("-m", "llmatter2d.cli", "benchmark", bench, "--kb", a.kb, "-k", a.k,
