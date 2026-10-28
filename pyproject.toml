@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmatter2d"
+version = "0.1.0"
+description = "Retrieval-augmented LLM for the analysis and discovery of two-dimensional materials (DFT, ARPES, tight-binding, Archimedean lattices)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sergio Levy", email = "levy@fisica.ufc.br" }]
+keywords = [
+    "2D materials", "RAG", "large language models", "DFT", "ARPES",
+    "tight-binding", "Wannier90", "Archimedean lattices", "materials discovery",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pydantic>=2.5",
+]
+
+[project.optional-dependencies]
+claude = ["anthropic>=1.0"]
+embeddings = ["sentence-transformers>=3.0"]
+ase = ["ase>=3.23"]
+jarvis = ["jarvis-tools>=2024.1"]
+arpes = ["h5py>=3.10"]
+all = [
+    "anthropic>=1.0",
+    "sentence-transformers>=3.0",
+    "ase>=3.23",
+    "jarvis-tools>=2024.1",
+    "h5py>=3.10",
+]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+llmatter2d = "llmatter2d.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/levsan13/LLMatter2D"
+Issues = "https://github.com/levsan13/LLMatter2D/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+llmatter2d = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
