@@ -1,0 +1,23 @@
+{
+  "title": "LLMatter2D: retrieval-augmented LLM for the analysis and discovery of two-dimensional materials",
+  "description": "LLMatter2D grounds pre-trained large language models (run locally through LM Studio, Ollama, or hosted APIs) in curated, citable data on two-dimensional materials: DFT electronic structure from C2DB, MC2D, 2DMatPedia and JARVIS-DFT, Wannier90 tight-binding models, geometry and ARPES observables. A hybrid retrieval layer (metadata filters plus embeddings) feeds the model, which answers with record-level citations. A generator built on the eleven Archimedean lattices proposes new 2D materials, screens them with nearest-neighbour tight-binding (flat bands, Dirac crossings) and exports structures for DFT validation. The package includes a benchmark comparing retrieval-augmented and closed-book answers.",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Levy, Sergio",
+      "affiliation": "Universidade Federal do Ceará"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "2D materials",
+    "retrieval-augmented generation",
+    "large language models",
+    "density functional theory",
+    "ARPES",
+    "tight-binding",
+    "Wannier90",
+    "Archimedean lattices",
+    "materials discovery"
+  ]
+}

@@ -31,12 +31,14 @@ embeddings = ["sentence-transformers>=3.0"]
 ase = ["ase>=3.23"]
 jarvis = ["jarvis-tools>=2024.1"]
 arpes = ["h5py>=3.10"]
+paper = ["matplotlib>=3.8"]
 all = [
     "anthropic>=1.0",
     "sentence-transformers>=3.0",
     "ase>=3.23",
     "jarvis-tools>=2024.1",
     "h5py>=3.10",
+    "matplotlib>=3.8",
 ]
 dev = ["pytest>=8", "ruff>=0.5"]
 

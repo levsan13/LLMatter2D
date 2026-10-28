@@ -16,5 +16,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install -e ".[dev,claude]"
+      - run: pip install -e ".[dev,claude,paper]"
       - run: pytest -q
+      - name: Paper figures and tables are reproducible
+        run: |
+          python paper/scripts/fig_archimedean.py --out "$RUNNER_TEMP/figures"
+          python paper/scripts/table_archimedean.py --out "$RUNNER_TEMP/tables"
+          diff "$RUNNER_TEMP/tables/archimedean.md" paper/tables/archimedean.md

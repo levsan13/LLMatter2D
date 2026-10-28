@@ -1,5 +1,9 @@
 # LLMatter2D
 
+[![tests](https://github.com/levsan13/LLMatter2D/actions/workflows/ci.yml/badge.svg)](https://github.com/levsan13/LLMatter2D/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+
 **Retrieval-augmented LLM for the analysis and discovery of two-dimensional materials.**
 
 LLMatter2D feeds a pre-trained large language model, run locally through
@@ -147,6 +151,40 @@ print(cands[0].describe())
 
 See also [examples/](examples).
 
+## Archimedean lattices
+
+![Nearest-neighbour tight-binding bands of the 11 Archimedean lattices](paper/figures/archimedean_bands.png)
+
+Nearest-neighbour tight-binding bands of the eleven Archimedean tilings (flat bands in
+orange). The tilings themselves are drawn in
+[paper/figures/archimedean_tilings.png](paper/figures/archimedean_tilings.png) and
+summarised in [paper/tables/archimedean.md](paper/tables/archimedean.md).
+
+## Evaluation
+
+`llmatter2d benchmark` measures what the RAG layer adds to a pre-trained model:
+
+```bash
+llmatter2d benchmark benchmarks/seed_questions.jsonl                         # retrieval only
+llmatter2d benchmark benchmarks/seed_questions.jsonl --mode rag closed_book  # with the LLM
+```
+
+* **retrieval**: recall@k and mean reciprocal rank of the records that hold the answer;
+* **answers**: unit-aware grading of numerical answers (eV/meV, angstrom/nm, m/s, K) and
+  keyword grading of textual ones, for the same model with retrieved context (`rag`) and
+  without it (`closed_book`);
+* **citations**: fraction of cited record ids that were retrieved (valid) and that hold
+  the answer (precise).
+
+The 25 seed questions are a template; the manuscript benchmark is built from the full
+databases (see [paper/README.md](paper/README.md)).
+
+## Reproducibility and publication
+
+[paper/](paper) regenerates every figure, table and benchmark result
+(`python paper/reproduce.py`); [paper/outline.md](paper/outline.md) holds the manuscript
+plan and the choice of journal.
+
 ## What is inside
 
 | Module | Content |
@@ -158,6 +196,7 @@ See also [examples/](examples).
 | `llmatter2d.lattices` | the 11 Archimedean tilings, bipartite decoration, NN tight-binding, band structures, flat-band and Dirac-crossing detection, POSCAR I/O |
 | `llmatter2d.predict` | candidate enumeration, heuristic screening, novelty against the knowledge base, LLM review, export for DFT |
 | `llmatter2d.analysis` | descriptors of a user structure, Archimedean-tiling match of the projected network, structural neighbours |
+| `llmatter2d.evaluation` | benchmark runner: retrieval metrics, unit-aware answer grading, citation metrics, RAG vs closed-book |
 
 ## Data sources and licensing
 
@@ -176,6 +215,11 @@ LLMatDesign and MatterChat. Related work and how LLMatter2D differs:
 
 If you use LLMatter2D, please cite this repository (see [CITATION.cff](CITATION.cff)) and the
 databases and papers behind the data you used.
+
+## Contributing
+
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[changelog](CHANGELOG.md).
 
 ## License
 

@@ -10,6 +10,8 @@
       task prompts (qa, analyze, predict)
 - [x] The 11 Archimedean lattices, NN tight-binding, flat-band and Dirac-crossing detection
 - [x] Candidate generation, screening, LLM review and POSCAR export
+- [x] Benchmark runner (retrieval, unit-aware answer grading, citations; RAG vs closed-book)
+- [x] Reproducible figures and tables for the manuscript (`paper/`)
 - [x] CLI and test suite
 
 ## v0.2: data at scale

@@ -1,10 +1,18 @@
 cff-version: 1.2.0
-message: "If you use LLMatter2D, please cite it as below."
+message: "If you use LLMatter2D, please cite it as below, together with the databases and papers behind the data you used."
 title: "LLMatter2D: retrieval-augmented LLM for the analysis and discovery of two-dimensional materials"
+abstract: >-
+  LLMatter2D grounds pre-trained large language models in curated, citable data on
+  two-dimensional materials (DFT electronic structure, Wannier tight-binding models,
+  geometry and ARPES observables) through a hybrid retrieval layer, and proposes new
+  2D materials by decorating the eleven Archimedean lattices, screening them with
+  tight-binding physics and exporting structures for DFT validation.
+type: software
 authors:
   - family-names: Levy
     given-names: Sergio
     email: levy@fisica.ufc.br
+    affiliation: Universidade Federal do Ceará
 version: 0.1.0
 date-released: 2026-10-28
 license: MIT
