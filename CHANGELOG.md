@@ -3,7 +3,7 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-10-28)
 
 First public version.
 
