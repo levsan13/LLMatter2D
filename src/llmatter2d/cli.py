@@ -127,6 +127,30 @@ def cmd_wannier(args) -> None:
     print(model.summary())
 
 
+def cmd_benchmark(args) -> None:
+    import json
+
+    from .evaluation import format_summary, load_benchmark, run_benchmark, summarize
+    from .llm import get_llm
+
+    kb = _kb(args)
+    needs_llm = any(m != "retrieval" for m in args.mode)
+    llm = get_llm(args.llm) if needs_llm else None
+    rows = run_benchmark(load_benchmark(args.questions), kb, llm, tuple(args.mode), args.k)
+    title = f"{Path(args.questions).name} | {kb.embedder.spec} | k={args.k}" + (
+        f" | {llm.name}" if llm else "")
+    report = format_summary(summarize(rows), title)
+    print(report)
+    if args.output:
+        out = Path(args.output)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with out.open("w", encoding="utf-8") as fh:
+            for r in rows:
+                fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        out.with_suffix(".md").write_text(report + "\n", encoding="utf-8")
+        print(f"\nper-question results: {out}; summary: {out.with_suffix('.md')}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="llmatter2d", description=__doc__)
     p.add_argument("--version", action="version", version=f"llmatter2d {__version__}")
@@ -195,6 +219,15 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("hr")
     s.add_argument("--threshold", type=float, default=1e-3)
     s.set_defaults(func=cmd_wannier)
+
+    s = sub.add_parser("benchmark", help="evaluate retrieval and answers (RAG vs closed-book)")
+    s.add_argument("questions", help="benchmark JSON-lines file")
+    rag_options(s)
+    s.add_argument("--embedder", default="hashing", help="embedder when no --kb exists")
+    s.add_argument("--mode", nargs="+", default=["retrieval"],
+                   choices=["retrieval", "rag", "closed_book"])
+    s.add_argument("-o", "--output", help="per-question results (.jsonl) + summary (.md)")
+    s.set_defaults(func=cmd_benchmark)
     return p
 
 

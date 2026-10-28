@@ -48,4 +48,10 @@ make it interesting, the main risk (e.g. dynamical instability, competing phases
 the DFT workflow needed to validate it (relaxation, phonons, formation energy / convex \
 hull, band structure with SOC). Mark clearly that all candidates are hypotheses."""
 
-PROMPTS = {"qa": QA, "analyze": ANALYZE, "predict": PREDICT}
+# Baseline for benchmarks: the same model answering from its weights only.
+CLOSED_BOOK = """You are an expert in two-dimensional materials (electronic structure, \
+tight-binding models, ARPES, structure and stability). Answer the question from your own \
+knowledge. Give numerical values with units and, when relevant, the method they refer to \
+(e.g. DFT-PBE, HSE06, experiment). Answer in the language of the question."""
+
+PROMPTS = {"qa": QA, "analyze": ANALYZE, "predict": PREDICT, "closed_book": CLOSED_BOOK}
