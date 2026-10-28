@@ -3,6 +3,16 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
+## 0.1.1 (2026-10-28)
+
+### Added
+- Provisional manuscript in REVTeX (`paper/manuscript/`) with a TikZ architecture figure,
+  verified bibliography and an Overleaf bundling script.
+- Table of the highest-ranked Archimedean candidates (`paper/scripts/table_candidates.py`).
+
+### Fixed
+- `.zenodo.json` uses the lowercase SPDX license identifier (`mit`) expected by Zenodo.
+
 ## 0.1.0 (2026-10-28)
 
 First public version.

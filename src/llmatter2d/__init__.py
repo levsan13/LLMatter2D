@@ -13,4 +13,4 @@ The package is organised in layers:
 * :mod:`llmatter2d.predict`  - generation and screening of new 2D candidates.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

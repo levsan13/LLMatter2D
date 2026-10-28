@@ -13,7 +13,7 @@ authors:
     given-names: Sergio
     email: levy@fisica.ufc.br
     affiliation: Universidade Federal do Ceará
-version: 0.1.0
+version: 0.1.1
 date-released: 2026-10-28
 license: MIT
 repository-code: "https://github.com/levsan13/LLMatter2D"
