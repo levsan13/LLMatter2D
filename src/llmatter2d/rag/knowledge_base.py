@@ -71,8 +71,9 @@ class Hit:
 
 
 class KnowledgeBase:
-    def __init__(self, embedder: Embedder | None = None):
+    def __init__(self, embedder: Embedder | None = None, formula_boost: float = FORMULA_BOOST):
         self.embedder = embedder or get_embedder("hashing")
+        self.formula_boost = formula_boost  # 0 disables the exact formula/name match bonus
         self.materials: dict[str, Material2D] = {}
         self._uids: list[str] = []
         self._texts: list[str] = []
@@ -118,10 +119,10 @@ class KnowledgeBase:
         scores = self._vectors @ q
         formulas = set(re.findall(r"\b[A-Z][a-z]?\d*(?:[A-Z][a-z]?\d*)*\b", query))
         names = {w.lower() for w in re.findall(r"[A-Za-z\-]{4,}", query)}
-        for i, meta in enumerate(self._meta):
+        for i, meta in enumerate(self._meta if self.formula_boost else []):
             mat = self.materials[self._uids[i]]
             if meta["formula"] in formulas or (mat.name and mat.name.split(" (")[0].lower() in names):
-                scores[i] += FORMULA_BOOST
+                scores[i] += self.formula_boost
         scores = np.where(mask, scores, -np.inf)
         order = np.argsort(-scores)[:k]
         return [Hit(self.materials[self._uids[i]], float(scores[i]), self._texts[i])

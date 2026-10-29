@@ -22,7 +22,7 @@ def get_connector(source: str, **kwargs: Any) -> Connector:
     if source == "2dmatpedia":
         return TwoDMatPediaConnector(kwargs["path"])
     if source == "jarvis":
-        return JarvisConnector()
+        return JarvisConnector(store_dir=kwargs.get("path"))
     raise ValueError(f"unknown source {source!r}")
 
 

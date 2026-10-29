@@ -134,11 +134,18 @@ def cmd_benchmark(args) -> None:
     from .llm import get_llm
 
     kb = _kb(args)
+    if args.formula_boost is not None:
+        kb.formula_boost = args.formula_boost
     needs_llm = any(m != "retrieval" for m in args.mode)
     llm = get_llm(args.llm) if needs_llm else None
-    rows = run_benchmark(load_benchmark(args.questions), kb, llm, tuple(args.mode), args.k)
-    title = f"{Path(args.questions).name} | {kb.embedder.spec} | k={args.k}" + (
-        f" | {llm.name}" if llm else "")
+    items = load_benchmark(args.questions)
+    if args.limit and args.limit < len(items):
+        import random
+
+        items = random.Random(args.seed).sample(items, args.limit)
+    rows = run_benchmark(items, kb, llm, tuple(args.mode), args.k)
+    title = (f"{Path(args.questions).name} | {kb.embedder.spec} | boost={kb.formula_boost} "
+             f"| k={args.k}" + (f" | {llm.name}" if llm else ""))
     report = format_summary(summarize(rows), title)
     print(report)
     if args.output:
@@ -226,6 +233,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--embedder", default="hashing", help="embedder when no --kb exists")
     s.add_argument("--mode", nargs="+", default=["retrieval"],
                    choices=["retrieval", "rag", "closed_book"])
+    s.add_argument("--formula-boost", type=float,
+                   help="score bonus for exact formula/name matches (default 0.25; 0 disables)")
+    s.add_argument("--limit", type=int, help="evaluate a random subset of N questions")
+    s.add_argument("--seed", type=int, default=2026, help="seed for --limit sampling")
     s.add_argument("-o", "--output", help="per-question results (.jsonl) + summary (.md)")
     s.set_defaults(func=cmd_benchmark)
     return p

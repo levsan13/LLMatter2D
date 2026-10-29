@@ -3,6 +3,18 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
+## Unreleased
+
+### Added
+- Benchmark of 300 questions generated from MC2D and JARVIS-DFT records
+  (`benchmarks/make_db_questions.py`, `benchmarks/db_questions.jsonl`).
+- Retrieval ablation: `KnowledgeBase(formula_boost=...)`, `llmatter2d benchmark
+  --formula-boost`, `--limit/--seed` sampling; `paper/scripts/table_retrieval.py`.
+- `paper/reproduce.py --data` downloads MC2D and JARVIS-2D and builds the hashing and
+  dense (BGE-small) knowledge bases; `--llm` runs RAG vs closed-book on both question sets.
+- JARVIS-DFT connector maps energy above hull, magnetic state and average effective
+  masses, and accepts a local `store_dir`.
+
 ## 0.1.1 (2026-10-28)
 
 ### Added

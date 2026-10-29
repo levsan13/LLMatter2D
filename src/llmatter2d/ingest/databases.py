@@ -149,15 +149,20 @@ class JarvisConnector(Connector):
     name = "jarvis"
     reference = "Choudhary et al., npj Comput. Mater. 6, 173 (2020)"
 
-    def __init__(self, dataset: str = "dft_2d", records: list[dict[str, Any]] | None = None):
+    def __init__(self, dataset: str = "dft_2d", records: list[dict[str, Any]] | None = None,
+                 store_dir: str | Path | None = None):
         self.dataset = dataset
         self._records = records
+        self.store_dir = store_dir
 
     def records(self) -> list[dict[str, Any]]:
         if self._records is None:
             from jarvis.db.figshare import data  # optional dependency
 
-            self._records = data(self.dataset)
+            kwargs = {"store_dir": str(self.store_dir)} if self.store_dir else {}
+            if self.store_dir:
+                Path(self.store_dir).mkdir(parents=True, exist_ok=True)
+            self._records = data(self.dataset, **kwargs)
         return self._records
 
     def record_to_material(self, r: dict[str, Any]) -> Material2D:
@@ -169,6 +174,9 @@ class JarvisConnector(Connector):
         magmom = as_float(r.get("magmom_oszicar"))
         spillage = as_float(r.get("spillage"))
         tags = ["topological candidate (spillage > 0.5)"] if spillage and spillage > 0.5 else []
+        masses = {label: v for label, key in (("electron (avg)", "avg_elec_mass"),
+                                              ("hole (avg)", "avg_hole_mass"))
+                  if (v := as_float(r.get(key))) is not None and v > 0}
         return Material2D(
             uid=f"jarvis:{r['jid']}",
             formula=r.get("formula") or structure.formula,
@@ -177,9 +185,13 @@ class JarvisConnector(Connector):
                 band_gaps=gaps,
                 is_metal=(gaps[0].value_eV < 1e-3) if gaps else None,
                 magnetic_moment_muB=magmom,
+                magnetic_state=("magnetic" if abs(magmom) > 0.05 else "NM")
+                if magmom is not None else None,
+                effective_masses=masses,
             ),
             stability=Stability(
                 formation_energy_eV_atom=as_float(r.get("formation_energy_peratom")),
+                energy_above_hull_eV_atom=as_float(r.get("ehull")),
                 exfoliation_energy_meV_atom=as_float(r.get("exfoliation_energy")),
             ),
             tags=tags,
