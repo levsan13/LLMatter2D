@@ -14,8 +14,11 @@ All notable changes to LLMatter2D are listed here. The project follows
   dense (BGE-small) knowledge bases; `--llm` runs RAG vs closed-book on both question sets.
 - JARVIS-DFT connector maps energy above hull, magnetic state and average effective
   masses, and accepts a local `store_dir`.
+- Zenodo DOI (concept DOI 10.5281/zenodo.23779294) in README, CITATION.cff and manuscript.
 
 ## 0.1.1 (2026-10-28)
+
+Archived on Zenodo: [10.5281/zenodo.23779295](https://doi.org/10.5281/zenodo.23779295).
 
 ### Added
 - Provisional manuscript in REVTeX (`paper/manuscript/`) with a TikZ architecture figure,

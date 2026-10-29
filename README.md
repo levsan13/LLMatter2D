@@ -3,6 +3,7 @@
 [![tests](https://github.com/levsan13/LLMatter2D/actions/workflows/ci.yml/badge.svg)](https://github.com/levsan13/LLMatter2D/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23779294.svg)](https://doi.org/10.5281/zenodo.23779294)
 
 **Retrieval-augmented LLM for the analysis and discovery of two-dimensional materials.**
 
@@ -218,8 +219,9 @@ LLMatDesign and MatterChat. Related work and how LLMatter2D differs:
 
 ## Citing
 
-If you use LLMatter2D, please cite this repository (see [CITATION.cff](CITATION.cff)) and the
-databases and papers behind the data you used.
+If you use LLMatter2D, please cite the archived software,
+[doi:10.5281/zenodo.23779294](https://doi.org/10.5281/zenodo.23779294) (all versions; see
+[CITATION.cff](CITATION.cff)), together with the databases and papers behind the data you used.
 
 ## Contributing
 

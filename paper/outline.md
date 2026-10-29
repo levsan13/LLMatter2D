@@ -48,12 +48,14 @@ them, then JOSS for the software.
 
 ## Still to do before submission
 
-- [ ] Ingest the full databases and rebuild the knowledge base with a dense embedder
-- [ ] Extend the benchmark to a few hundred questions generated from database records
-      (gaps by method, magnetism, stability) plus the ARPES and tight-binding questions
-- [ ] Run Table 3 with at least three pre-trained models in LM Studio; fix seeds,
+- [x] Knowledge base from MC2D and JARVIS-2D (3799 records) with lexical and dense
+      embedders; C2DB and 2DMatPedia still to add when their files are available
+- [x] Benchmark of 300 questions generated from database records + 25 curated questions;
+      retrieval results (Table III)
+- [ ] Extend the database questions to magnetism and stability
+- [ ] Answers of at least three pre-trained models in LM Studio, RAG vs closed-book; fix
       temperature, quantisation and context length; repeat runs to estimate variance
 - [ ] DFT validation of the top Archimedean candidates (relaxation, phonons, E_hull)
-- [ ] Redraw Fig. 1 for the journal
-- [ ] Enable Zenodo, create the `v0.1.0` release and add the DOI to README and CITATION.cff
+- [x] Fig. 1 drawn in TikZ (check it renders as intended on Overleaf)
+- [x] Zenodo archive and DOI (concept DOI 10.5281/zenodo.23779294)
 - [ ] Add the author's ORCID to CITATION.cff and .zenodo.json

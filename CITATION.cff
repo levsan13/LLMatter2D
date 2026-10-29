@@ -15,6 +15,14 @@ authors:
     affiliation: Universidade Federal do Ceará
 version: 0.1.1
 date-released: 2026-10-28
+doi: 10.5281/zenodo.23779294
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23779294
+    description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.23779295
+    description: Version 0.1.1
 license: MIT
 repository-code: "https://github.com/levsan13/LLMatter2D"
 keywords:
