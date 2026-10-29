@@ -22,6 +22,7 @@ FILES = {
     "figures/archimedean_bands.pdf": PAPER / "figures" / "archimedean_bands.pdf",
     "tables/archimedean.tex": PAPER / "tables" / "archimedean.tex",
     "tables/candidates.tex": PAPER / "tables" / "candidates.tex",
+    "tables/retrieval.tex": PAPER / "tables" / "retrieval.tex",
 }
 
 

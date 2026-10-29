@@ -47,9 +47,14 @@ layer in which numerical constraints are enforced by metadata filters rather tha
 embedding similarity. On top of this layer, a generator based on the eleven Archimedean
 tilings proposes new 2D materials, characterizes them with nearest-neighbor tight binding,
 which recovers Dirac crossings, flat bands and quadratic band touchings, and exports
-structures for first-principles validation. A benchmark compares retrieval-augmented and
-closed-book answers of the same model with unit-aware grading and citation metrics.
-\pending{one or two sentences with the benchmark results and the DFT-validated candidates.}
+structures for first-principles validation. On a knowledge base of 3799 monolayers from MC2D
+and JARVIS-DFT, the hybrid retrieval places the record that holds the answer first for
+99.7--100\% of 300 database-derived questions, whereas the same embeddings without exact
+formula matching reach 25\% (lexical) and 74\% (dense). A benchmark compares
+retrieval-augmented and closed-book answers of the same model with unit-aware grading and
+citation metrics.
+\pending{one sentence with the answer accuracy of the pre-trained models with and without
+retrieval.}
 \end{abstract}
 
 \maketitle
@@ -172,9 +177,12 @@ provenance entries (source, identifier, method, reference, retrieval date). Reco
 different sources keep source-prefixed identifiers (e.g., \code{mc2d:\ldots},
 \code{c2db:\ldots}), which the language model is asked to cite.
 
-Connectors are provided for MC2D through its OPTIMADE interface~\cite{Andersen2021} (2683
-structures on October 28, 2026), for local C2DB and 2DMatPedia files and for the JARVIS-DFT
-2D dataset. A curated seed set of 13 well-known monolayers with literature values
+Connectors are provided for MC2D through its OPTIMADE interface~\cite{Andersen2021}, for
+local C2DB and 2DMatPedia files and for the JARVIS-DFT 2D dataset. The knowledge base used
+in this work contains 3799 records: 2683 MC2D monolayers (1458 with a computed band gap),
+1103 JARVIS-DFT monolayers (OptB88vdW gaps for all, TBmBJ gaps for 246 and HSE06 gaps for
+54, together with formation and exfoliation energies, energies above the hull, magnetic
+moments and average effective masses) and 13 curated records. A curated seed set of 13 well-known monolayers with literature values
 (graphene, hBN, four $1H$ transition-metal dichalcogenides, $1T$-TaS$_2$, phosphorene,
 silicene, germanene, stanene, CrI$_3$ and graphenylene)~\cite{CastroNeto2009,Mak2010,
 Liu2011,Xu2013,Huang2017,Bostwick2007,Miwa2015,Zhang2014,Elias2019,Song2013} serves for
@@ -296,6 +304,19 @@ $|\mathcal C\cap\mathcal R|/|\mathcal C|$, where $\mathcal C$ is the set of cite
 identifiers. Each question is asked to the same model with retrieval (RAG) and without it
 (closed book).
 
+Two question sets are used. The curated set contains 25 questions on the seed materials
+(band gaps by method, spin-orbit gaps and splittings, Fermi velocity, hopping, lattice
+constants, buckling, Curie temperature, magnetic order, charge-density waves, topology and
+Archimedean structure). The database set contains 300 questions generated from the records
+with a fixed random seed: 100 MC2D band gaps and 50 MC2D lattice constants, and 50
+OptB88vdW gaps, 50 TBmBJ gaps and 50 lattice constants from JARVIS-DFT. Each question names
+the database (e.g., ``What is the TBmBJ band gap of monolayer X in JARVIS-DFT?''), uses only
+formulas that are unique within that database, skips metals (gaps below 0.1~eV) and, for
+lattice constants, considers hexagonal and square cells only. Tolerances are
+$\max(0.05~\text{eV}, 5\%)$ for gaps and $\max(0.03~\text{\AA}, 2\%)$ for lattice constants.
+Because the reference value is the one stored in the database, a closed-book model can at
+best approximate it, which is precisely the gap that retrieval is meant to close.
+
 % =====================================================================================
 \section{Results}
 % =====================================================================================
@@ -388,16 +409,43 @@ out. \pending{DFT relaxation, phonon spectra, formation energies and energies ab
 for the top candidates; band structures with spin-orbit coupling compared with the
 tight-binding features; LLM review of the short list.}
 
-\subsection{Benchmark}
+\subsection{Retrieval}
 
-On the seed knowledge base (13 records) the 25 benchmark questions are retrieved perfectly
-with the hashing embedder (recall@8 $=1.00$, MRR $=1.00$), which only confirms that the
-pipeline is consistent: with so few records retrieval is trivial.
-\pending{benchmark on the full knowledge base (C2DB, MC2D, 2DMatPedia, JARVIS-DFT) with a
-question set generated from database records; recall@$k$ and MRR for the hashing and dense
-embedders; accuracy and citation metrics for RAG and closed-book answers of at least three
-pre-trained models served by LM Studio, with model identifiers, quantization, context length
-and repeated runs.}
+\begin{table*}[t]
+\caption{Retrieval on the 3799-record knowledge base: recall@$k$ (R@$k$) of the records that
+hold the answer and mean reciprocal rank over the top 8, for the lexical (feature hashing) and
+dense (BGE-small through sentence-transformers) embedders, with ($\beta=0.25$) and without
+($\beta=0$) the bonus for exact formula or name matches.}
+\label{tab:retrieval}
+\footnotesize
+\input{retrieval}
+\end{table*}
+
+Table~\ref{tab:retrieval} shows that the exact-match term is what makes retrieval reliable
+for materials. Without it, the lexical embedder places the correct record first for only
+25\% of the database questions (53\% within the top 8). Chemical formulas are split into
+character trigrams shared by many compounds, and the remaining words of the question
+(``band gap'', ``monolayer'', the database name) are common to thousands of cards. The dense
+embedder is much better on its own (74\% at rank 1, 94\% within the top 8), but its errors are
+chemically similar compounds, e.g., Cl$_9$K$_2$Ta$_3$ retrieved for Cl$_9$In$_2$Ta$_3$. With
+the bonus, both embedders retrieve the correct record at rank 1 for 99.7--100\% of the 300
+database questions. The curated questions expose a different difficulty: the same compound
+is described by several records, and the answer (an optical gap, an ARPES splitting, a Curie
+temperature) is only in the curated one. Here the lexical embedder with the bonus is best
+(R@1 $=0.97$, R@3 $=1.00$) because the property words of the question appear in the right
+card, whereas the dense embedder places the MC2D or JARVIS-DFT record of the same compound
+first for MoS$_2$, MoSe$_2$ and CrI$_3$ (R@1 $=0.81$); the curated record still appears among
+the eight records passed to the model (at ranks 2 to 6). Merging records of the same material across sources
+would remove this ambiguity. The default configuration of LLMatter2D is therefore the lexical
+embedder with the exact-match bonus, with dense embeddings as an option for free-text queries
+that do not name a material.
+
+\subsection{Answers of pre-trained models}
+
+\pending{accuracy and citation metrics for RAG and closed-book answers on the 25 curated and
+300 database questions, for at least three pre-trained models served by LM Studio, with model
+identifiers, quantization, context length and repeated runs. Command:
+\code{python paper/reproduce.py --llm lmstudio:<model>}.}
 
 \subsection{Case study}
 
@@ -445,9 +493,12 @@ couples them to a generator of new materials based on the Archimedean tilings.
 
 The code, the benchmark questions, the scripts that generate every figure and table, and all
 per-question outputs are available at \url{https://github.com/levsan13/LLMatter2D} under the
-MIT license and archived on Zenodo \pending{DOI}. The database versions and download dates
-used to build the knowledge base are recorded in the provenance of each record
-\pending{list them}.
+MIT license and archived on Zenodo \pending{DOI}. The knowledge base was built on October 29,
+2026 from the MC2D OPTIMADE endpoint (\url{https://optimade.materialscloud.org/main/mc2d},
+2683 structures) and from the JARVIS-DFT 2D dataset distributed with \code{jarvis-tools}
+(file \code{d2-12-12-2022.json.zip}, 1103 records; figshare DOI 10.6084/m9.figshare.6815705).
+The 300 database questions, with their reference values and record identifiers, are part
+of the repository, so the benchmark can be repeated even if the databases change.
 
 \begin{acknowledgments}
 \pending{funding and acknowledgments; disclosure of the use of AI-assisted tools in software

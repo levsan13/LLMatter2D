@@ -176,8 +176,13 @@ llmatter2d benchmark benchmarks/seed_questions.jsonl --mode rag closed_book  # w
 * **citations**: fraction of cited record ids that were retrieved (valid) and that hold
   the answer (precise).
 
-The 25 seed questions are a template; the manuscript benchmark is built from the full
-databases (see [paper/README.md](paper/README.md)).
+Two question sets ship with the repository: 25 curated questions
+(`benchmarks/seed_questions.jsonl`) and 300 questions generated from MC2D and JARVIS-DFT
+records (`benchmarks/db_questions.jsonl`). On the 3799-record knowledge base built from
+MC2D, JARVIS-2D and the seed set, the record holding the answer is ranked first for
+99.7-100% of the database questions with the exact formula match enabled, against 25%
+(lexical) and 74% (dense) without it; full table in
+[paper/tables/retrieval.md](paper/tables/retrieval.md).
 
 ## Reproducibility and publication
 
