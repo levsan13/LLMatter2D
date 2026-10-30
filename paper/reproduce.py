@@ -48,24 +48,26 @@ def build_data() -> None:
         "--kb", f"hashing={KB_HASHING}", f"bge-small={KB_DENSE}")
 
 
-def run_answers(llm: str, kb: Path, k: str, limit: str | None) -> None:
-    tag = re.sub(r"[^A-Za-z0-9_.-]+", "_", llm)
+def run_answers(llm: str, kb: Path, k: str, limit: str | None, tag: str | None) -> None:
+    tag = tag or re.sub(r"[^A-Za-z0-9_.-]+", "_", llm.split(":", 1)[-1].split("/")[-1])
     for name in ("seed_questions", "db_questions"):
         args = ["-m", "llmatter2d.cli", "benchmark", str(ROOT / "benchmarks" / f"{name}.jsonl"),
                 "--kb", str(kb), "-k", k, "--llm", llm, "--mode", "rag", "closed_book",
-                "-o", str(PAPER / "results" / f"answers_{name}_{tag}.jsonl")]
+                "--resume", "-o", str(PAPER / "results" / f"answers_{name}_{tag}.jsonl")]
         if limit:
             args += ["--limit", limit]
         run(*args)
+    run(str(PAPER / "scripts" / "table_answers.py"))
 
 
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--data", action="store_true", help="download data and build the KBs")
     p.add_argument("--llm", help="LLM spec for the RAG vs closed-book benchmark")
-    p.add_argument("--kb", default=str(KB_DENSE), help="KB for the LLM benchmark")
+    p.add_argument("--kb", default=str(KB_HASHING), help="KB for the LLM benchmark")
     p.add_argument("-k", default="8")
     p.add_argument("--limit", help="random subset of questions per benchmark file")
+    p.add_argument("--tag", help="short model name used in result file names")
     a = p.parse_args()
 
     run(str(PAPER / "scripts" / "fig_archimedean.py"))
@@ -74,7 +76,7 @@ def main() -> None:
     if a.data:
         build_data()
     if a.llm:
-        run_answers(a.llm, Path(a.kb), a.k, a.limit)
+        run_answers(a.llm, Path(a.kb), a.k, a.limit, a.tag)
 
 
 if __name__ == "__main__":

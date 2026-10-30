@@ -11,9 +11,10 @@ A benchmark is a JSON-lines file; each line is one question::
 Metrics
 -------
 * retrieval: recall@k of the ``relevant`` records and reciprocal rank of the first one;
-* answer: a numeric answer is correct if a quantity with the expected unit lies within
-  ``tolerance`` of ``answer_value`` (meV/eV, nm/angstrom, km/s/m/s converted); textual
-  answers are graded with the keyword lists;
+* answer: a numeric answer is correct if the *first* quantity with the expected unit lies
+  within ``tolerance`` of ``answer_value`` (meV/eV, nm/angstrom, km/s/m/s converted); the
+  lenient variant accepts any quantity in the answer and is reported as
+  ``accuracy_lenient``. Textual answers are graded with the keyword lists;
 * citations (RAG mode): fraction of cited record ids that are among the retrieved ones
   (valid) and among the relevant ones (precise).
 
@@ -33,7 +34,7 @@ from typing import Any
 from .llm.base import LLM
 from .llm.prompts import PROMPTS
 from .rag.knowledge_base import Filters, KnowledgeBase
-from .rag.pipeline import RAGPipeline
+from .rag.pipeline import RAGPipeline, resolve_citations
 
 MODES = ("retrieval", "rag", "closed_book")
 
@@ -74,15 +75,35 @@ _UNIT_ALIASES = {
 _TO_BASE = {"meV": ("eV", 1e-3), "nm": ("A", 10.0), "km/s": ("m/s", 1e3)}
 _QUANTITY = re.compile(
     r"(?<![\w.])(\d+(?:[.,]\d+)?)"                       # mantissa
-    r"(?:\s*(?:[x×·*]\s*10\s*\^?\s*(-?\d+)|e(-?\d+)))?"  # x 10^n or e-notation
+    r"(?:\s*(?:[x×·*]\s*10\s*\^?\s*([+-]?\d+)|e([+-]?\d+)))?"  # x 10^n or e-notation
     r"\s*(meV|eV|Å|angstroms?|(?-i:A)|nm|km/s|m\s*/\s*s|m\s*s\s*\^?-1|(?-i:K)|μB|muB)(?![\w/])",
     re.IGNORECASE,
 )
 
 
+_LATEX_SUBS = [
+    (re.compile(r"\\(?:text|mathrm|rm|mbox)\s*\{([^{}]*)\}"), r"\1"),  # \text{eV} -> eV
+    (re.compile(r"\\[()\[\]]"), " "),                                 # \( \) \[ \]
+    (re.compile(r"\\times|\\cdot"), "×"),
+    (re.compile(r"\\[,;:! ]|~|\\quad|\\qquad"), " "),                 # thin spaces
+    (re.compile(r"\^\s*\{\s*([+-]?\d+)\s*\}"), r"^\1"),                # 10^{6} -> 10^6
+    (re.compile(r"\\AA\b|\\mathring\s*\{?A\}?"), "Å"),
+]
+
+
+def _strip_latex(text: str) -> str:
+    for pattern, repl in _LATEX_SUBS:
+        text = pattern.sub(repl, text)
+    return text.replace("{", "").replace("}", "")
+
+
 def extract_quantities(text: str) -> list[tuple[float, str]]:
-    """Numbers with units found in free text, converted to base units (eV, A, m/s, K)."""
-    text = text.translate(_SUPERSCRIPT)
+    """Numbers with units found in free text, converted to base units (eV, A, m/s, K).
+
+    Plain text, Unicode superscripts and LaTeX notation (as written by some models,
+    e.g. ``1\\times10^{6}\\,\\text{m s}^{-1}``) are understood.
+    """
+    text = _strip_latex(text.translate(_SUPERSCRIPT))
     out = []
     for mant, exp1, exp2, unit in _QUANTITY.findall(text):
         value = float(mant.replace(",", "."))
@@ -112,26 +133,48 @@ def cited_ids(text: str) -> set[str]:
 
 
 def grade_answer(item: BenchmarkItem, text: str) -> dict[str, Any]:
+    """Grade an answer.
+
+    Numerical questions are graded strictly on the *first* quantity with the expected unit
+    (the value the answer leads with): an answer that lists many candidate values must not
+    score by chance. The lenient criterion (any quantity within tolerance) is kept as
+    ``correct_lenient``.
+    """
     low = text.lower()
     result: dict[str, Any] = {}
     if item.answer_value is not None:
         unit = _UNIT_ALIASES.get((item.unit or "").lower(), item.unit)
         tol = item.tolerance if item.tolerance is not None else 0.05 * abs(item.answer_value)
         values = [v for v, u in extract_quantities(text) if u == unit]
+        tol *= 1 + 1e-9  # a value exactly at the tolerance (3.0 vs 2.8 +/- 0.2) counts as correct
         result["numeric_ok"] = any(abs(v - item.answer_value) <= tol for v in values)
+        result["numeric_first_ok"] = bool(values) and abs(values[0] - item.answer_value) <= tol
+        result["n_values"] = len(values)
     if item.keywords_all or item.keywords_any:
         ok_all = all(k.lower() in low for k in item.keywords_all)
         ok_any = (not item.keywords_any) or any(k.lower() in low for k in item.keywords_any)
         result["keywords_ok"] = ok_all and ok_any
-    checks = [v for k, v in result.items() if k.endswith("_ok")]
-    result["correct"] = all(checks) if checks else None
+    strict = [v for k, v in result.items() if k in ("numeric_first_ok", "keywords_ok")]
+    lenient = [v for k, v in result.items() if k in ("numeric_ok", "keywords_ok")]
+    result["correct"] = all(strict) if strict else None
+    result["correct_lenient"] = all(lenient) if lenient else None
     return result
 
 
 # ------------------------------------------------------------------------------- running
 
+def citation_metrics(item: BenchmarkItem, text: str, retrieved: list[str]) -> dict[str, Any]:
+    cites = cited_ids(text)
+    out: dict[str, Any] = {"cited": sorted(cites)}
+    if cites:
+        out["citation_valid"] = len(cites & set(retrieved)) / len(cites)
+        if item.relevant:
+            out["citation_precise"] = len(cites & set(item.relevant)) / len(cites)
+    return out
+
+
 def evaluate_item(item: BenchmarkItem, kb: KnowledgeBase, llm: LLM | None, mode: str,
-                  k: int = 8) -> dict[str, Any]:
+                  k: int = 8, citation: str = "number") -> dict[str, Any]:
     if mode not in MODES:
         raise ValueError(f"mode must be one of {MODES}")
     row: dict[str, Any] = {"id": item.id, "category": item.category, "mode": mode}
@@ -149,14 +192,13 @@ def evaluate_item(item: BenchmarkItem, kb: KnowledgeBase, llm: LLM | None, mode:
     if llm is None:
         raise ValueError(f"mode {mode!r} needs an LLM")
     if mode == "rag":
-        answer = RAGPipeline(kb, llm, k=k).ask(item.question, filters=item.filter_obj)
+        answer = RAGPipeline(kb, llm, k=k, citation=citation).ask(item.question,
+                                                                  filters=item.filter_obj)
         text = answer.text
-        cites = cited_ids(text)
-        row["cited"] = sorted(cites)
-        if cites:
-            row["citation_valid"] = len(cites & set(row["retrieved"])) / len(cites)
-            if item.relevant:
-                row["citation_precise"] = len(cites & set(item.relevant)) / len(cites)
+        row["citation_style"] = citation
+        if answer.raw_text != text:
+            row["raw_answer"] = answer.raw_text
+        row.update(citation_metrics(item, text, row["retrieved"]))
     else:
         text = llm.generate(PROMPTS["closed_book"], item.question).text
     row["answer"] = text
@@ -165,8 +207,32 @@ def evaluate_item(item: BenchmarkItem, kb: KnowledgeBase, llm: LLM | None, mode:
 
 
 def run_benchmark(items: list[BenchmarkItem], kb: KnowledgeBase, llm: LLM | None = None,
-                  modes: tuple[str, ...] = ("retrieval",), k: int = 8) -> list[dict[str, Any]]:
-    return [evaluate_item(item, kb, llm, mode, k) for mode in modes for item in items]
+                  modes: tuple[str, ...] = ("retrieval",), k: int = 8,
+                  citation: str = "number") -> list[dict[str, Any]]:
+    return [evaluate_item(item, kb, llm, mode, k, citation) for mode in modes for item in items]
+
+
+def regrade(rows: list[dict[str, Any]], items: list[BenchmarkItem]) -> list[dict[str, Any]]:
+    """Re-apply grading and citation metrics to stored answers (after a grader fix)."""
+    by_id = {i.id: i for i in items}
+    out = []
+    for r in rows:
+        r = dict(r)
+        item = by_id.get(r["id"])
+        if item is not None and "answer" in r and not r.get("error"):
+            for key in ("numeric_ok", "numeric_first_ok", "n_values", "keywords_ok",
+                        "correct_lenient", "cited", "citation_valid", "citation_precise"):
+                r.pop(key, None)
+            if r["mode"] == "rag" and r.get("citation_style") == "number":
+                raw = r.get("raw_answer", r["answer"])
+                text = resolve_citations(raw, r.get("retrieved", []))
+                if text != raw:
+                    r["raw_answer"], r["answer"] = raw, text
+            r.update(grade_answer(item, r["answer"]))
+            if r["mode"] == "rag":
+                r.update(citation_metrics(item, r["answer"], r.get("retrieved", [])))
+        out.append(r)
+    return out
 
 
 def summarize(rows: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
@@ -183,14 +249,18 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
             "mrr": avg(rs, "reciprocal_rank"),
             "accuracy": avg([{"c": float(r["correct"])} for r in rs
                              if r.get("correct") is not None], "c"),
+            "accuracy_lenient": avg([{"c": float(r["correct_lenient"])} for r in rs
+                                     if r.get("correct_lenient") is not None], "c"),
             "citation_valid": avg(rs, "citation_valid"),
             "citation_precise": avg(rs, "citation_precise"),
+            "errors": sum(1 for r in rs if r.get("error")),
         }
     return out
 
 
 def format_summary(summary: dict[str, dict[str, float]], title: str = "") -> str:
-    cols = ["n", "recall_at_k", "mrr", "accuracy", "citation_valid", "citation_precise"]
+    cols = ["n", "recall_at_k", "mrr", "accuracy", "accuracy_lenient", "citation_valid",
+            "citation_precise", "errors"]
     lines = [f"### {title}", ""] if title else []
     lines.append("| mode | " + " | ".join(cols) + " |")
     lines.append("|---|" + "---|" * len(cols))

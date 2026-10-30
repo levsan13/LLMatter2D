@@ -129,9 +129,10 @@ def cmd_wannier(args) -> None:
 
 def cmd_benchmark(args) -> None:
     import json
+    import time
 
-    from .evaluation import format_summary, load_benchmark, run_benchmark, summarize
-    from .llm import get_llm
+    from .evaluation import evaluate_item, format_summary, load_benchmark, summarize
+    from .llm import LLMServerError, get_llm
 
     kb = _kb(args)
     if args.formula_boost is not None:
@@ -143,19 +144,86 @@ def cmd_benchmark(args) -> None:
         import random
 
         items = random.Random(args.seed).sample(items, args.limit)
-    rows = run_benchmark(items, kb, llm, tuple(args.mode), args.k)
+
+    out = Path(args.output) if args.output else None
+    rows: list[dict] = []
+    if out and args.resume and out.exists():  # keep finished answers, redo failed ones
+        rows = [r for r in (json.loads(line) for line in
+                            out.read_text(encoding="utf-8").splitlines() if line.strip())
+                if not r.get("error")]
+        print(f"resuming: {len(rows)} answers kept from {out}", file=sys.stderr)
+    done = {(r["id"], r["mode"]) for r in rows}
+    fh = None
+    if out:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        fh = out.open("w", encoding="utf-8")
+        for r in rows:
+            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+        fh.flush()
+    total = len(items) * len(args.mode)
+    consecutive_errors, aborted = 0, False
+    try:
+        for mode in args.mode:
+            for item in items:
+                if (item.id, mode) in done:
+                    continue
+                t0 = time.perf_counter()
+                for attempt in range(args.retries + 1):
+                    try:
+                        row = evaluate_item(item, kb, llm, mode, args.k, args.citation_style)
+                        break
+                    except (LLMServerError, TimeoutError, OSError) as exc:
+                        row = {"id": item.id, "category": item.category, "mode": mode,
+                               "error": str(exc), "correct": False}
+                        if attempt < args.retries:
+                            print(f"  retry {attempt + 1}/{args.retries} after error: {exc}",
+                                  file=sys.stderr, flush=True)
+                            time.sleep(args.retry_wait)
+                row["seconds"] = round(time.perf_counter() - t0, 2)
+                rows.append(row)
+                if fh:  # written as we go, so a long run survives interruptions
+                    fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+                    fh.flush()
+                if needs_llm:
+                    status = "ERROR" if row.get("error") else f"correct={row.get('correct')}"
+                    print(f"[{len(rows)}/{total}] {mode:11s} {item.id:28s} {status} "
+                          f"({row['seconds']:.1f} s)", file=sys.stderr, flush=True)
+                consecutive_errors = consecutive_errors + 1 if row.get("error") else 0
+                if consecutive_errors >= 3:
+                    aborted = True
+                    break
+            if aborted:
+                break
+    finally:
+        if fh:
+            fh.close()
+    if aborted:
+        sys.exit("error: the LLM server stopped answering (3 consecutive failures). "
+                 "Answers so far are saved; fix the connection and rerun with --resume.")
     title = (f"{Path(args.questions).name} | {kb.embedder.spec} | boost={kb.formula_boost} "
              f"| k={args.k}" + (f" | {llm.name}" if llm else ""))
     report = format_summary(summarize(rows), title)
     print(report)
-    if args.output:
-        out = Path(args.output)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        with out.open("w", encoding="utf-8") as fh:
-            for r in rows:
-                fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+    if out:
         out.with_suffix(".md").write_text(report + "\n", encoding="utf-8")
         print(f"\nper-question results: {out}; summary: {out.with_suffix('.md')}")
+
+
+def cmd_regrade(args) -> None:
+    import json
+
+    from .evaluation import format_summary, load_benchmark, regrade, summarize
+
+    path = Path(args.results)
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
+    rows = regrade(rows, load_benchmark(args.questions))
+    path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows),
+                    encoding="utf-8")
+    md = path.with_suffix(".md")
+    title = md.read_text(encoding="utf-8").splitlines()[0].lstrip("# ") if md.exists() else ""
+    report = format_summary(summarize(rows), title + " | regraded")
+    md.write_text(report + "\n", encoding="utf-8")
+    print(report)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -237,8 +305,19 @@ def build_parser() -> argparse.ArgumentParser:
                    help="score bonus for exact formula/name matches (default 0.25; 0 disables)")
     s.add_argument("--limit", type=int, help="evaluate a random subset of N questions")
     s.add_argument("--seed", type=int, default=2026, help="seed for --limit sampling")
+    s.add_argument("--citation-style", choices=["number", "id"], default="number",
+                   help="ask the model to cite record numbers (mapped to ids) or the ids")
     s.add_argument("-o", "--output", help="per-question results (.jsonl) + summary (.md)")
+    s.add_argument("--resume", action="store_true",
+                   help="keep answers already in --output and run only the missing/failed ones")
+    s.add_argument("--retries", type=int, default=2, help="retries per question on errors")
+    s.add_argument("--retry-wait", type=float, default=15.0, help="seconds between retries")
     s.set_defaults(func=cmd_benchmark)
+
+    s = sub.add_parser("regrade", help="re-grade stored benchmark answers")
+    s.add_argument("results", help="per-question results (.jsonl) written by benchmark")
+    s.add_argument("questions", help="the benchmark JSON-lines file used for the run")
+    s.set_defaults(func=cmd_regrade)
     return p
 
 

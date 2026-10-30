@@ -15,6 +15,21 @@ All notable changes to LLMatter2D are listed here. The project follows
 - JARVIS-DFT connector maps energy above hull, magnetic state and average effective
   masses, and accepts a local `store_dir`.
 - Zenodo DOI (concept DOI 10.5281/zenodo.23779294) in README, CITATION.cff and manuscript.
+- Numbered citations: the model cites record numbers ([2]) that the pipeline maps to record
+  ids (`RAGPipeline(citation="number")`, default); `--citation-style id` keeps the old
+  behaviour. Small local models mis-copied long MC2D ids or invented id-like strings.
+- `llmatter2d benchmark --resume` (keep finished answers, redo missing or failed ones),
+  per-question retries and an automatic stop after three consecutive server failures;
+  answers are written as they arrive.
+- `llmatter2d regrade` re-applies the grader to stored answers.
+- `paper/scripts/table_answers.py`: table of RAG vs closed-book answers per model.
+
+### Changed
+- Numerical answers are graded on the first quantity with the expected unit; the lenient
+  any-quantity criterion is reported as `accuracy_lenient`.
+
+### Fixed
+- Signed exponents (`1e+06`, `10^+6`) are parsed by the answer grader.
 
 ## 0.1.1 (2026-10-28)
 

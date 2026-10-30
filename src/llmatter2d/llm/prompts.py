@@ -8,8 +8,7 @@ Each <record> comes from a DFT database (C2DB, MC2D, 2DMatPedia, JARVIS-DFT), fr
 Wannier90/tight-binding models, from ARPES analyses, or from the curated seed set.
 
 How to use the records:
-- Treat the records as the source of truth for numbers. Cite the record id in square \
-brackets after each value you take from it, e.g. "1.7 eV (DFT-PBE) [seed:MoS2-1H]".
+- Treat the records as the source of truth for numbers. {cite}
 - Always state the method behind a number. Semilocal DFT (PBE, optB88vdW) usually \
 underestimates band gaps; HSE06, GW and experiment are closer to the true quasiparticle \
 or optical gaps, and optical gaps include excitonic effects.
@@ -54,4 +53,22 @@ tight-binding models, ARPES, structure and stability). Answer the question from 
 knowledge. Give numerical values with units and, when relevant, the method they refer to \
 (e.g. DFT-PBE, HSE06, experiment). Answer in the language of the question."""
 
-PROMPTS = {"qa": QA, "analyze": ANALYZE, "predict": PREDICT, "closed_book": CLOSED_BOOK}
+# Small local models mis-copy long record ids (e.g. MC2D UUIDs) or invent id-like strings,
+# so by default they cite the short record number and the pipeline maps it back to the id.
+CITE_RULES = {
+    "number": 'Cite the record number (the n attribute of <record>) in square brackets after '
+              'each value you take from it, e.g. "1.7 eV (DFT-PBE) [2]".',
+    "id": 'Cite the record id in square brackets after each value you take from it, e.g. '
+          '"1.7 eV (DFT-PBE) [seed:MoS2-1H]".',
+}
+
+
+def system_prompts(citation: str = "number") -> dict[str, str]:
+    rule = CITE_RULES[citation]
+    out = {task: text.replace("{cite}", rule)
+           for task, text in (("qa", QA), ("analyze", ANALYZE), ("predict", PREDICT))}
+    out["closed_book"] = CLOSED_BOOK
+    return out
+
+
+PROMPTS = system_prompts("number")

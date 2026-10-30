@@ -43,6 +43,10 @@ def test_grading():
     item = BenchmarkItem(id="q", question="?", answer_value=0.024, unit="eV", tolerance=0.006)
     assert grade_answer(item, "the SOC gap is ~24 meV")["correct"] is True
     assert grade_answer(item, "the SOC gap is 0.1 eV")["correct"] is False
+    edge = BenchmarkItem(id="t", question="?", answer_value=2.8, unit="eV", tolerance=0.2)
+    assert grade_answer(edge, "t is about 3.0 eV")["correct"] is True  # boundary, float-safe
+    first = grade_answer(edge, "values from 1.0 eV to 2.8 eV")
+    assert first["correct"] is False and first["correct_lenient"] is True
     kw = BenchmarkItem(id="k", question="?", keywords_all=["silicene", "stanene"])
     assert grade_answer(kw, "Silicene and stanene")["correct"] is True
     assert grade_answer(kw, "only silicene")["correct"] is False
