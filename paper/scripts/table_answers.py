@@ -102,7 +102,8 @@ def to_markdown(summary: dict) -> str:
                      f"| {_cell(rag_db)} | {_cell(cb_db)} | {cites} | {refusals}/{n_cb} | {secs} |")
     lines += ["", "Accuracy in %. Curated: 25 questions; database: 300 questions generated from "
               "MC2D and JARVIS-DFT records. Retrieval: lexical embedder with exact-match bonus, "
-              "k = 8, numbered citations; temperature 0.2. * = run not complete (n answers)."]
+              "k = 8, numbered citations; temperature 0.2. Models served by LM Studio on one "
+              "NVIDIA RTX PRO 6000 Blackwell GPU (96 GB VRAM). * = run not complete (n answers)."]
     return "\n".join(lines) + "\n"
 
 

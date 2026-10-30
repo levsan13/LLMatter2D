@@ -57,6 +57,12 @@ python paper/reproduce.py --llm lmstudio:<model>   # + RAG vs closed-book answer
 3. Record the model identifier, quantisation, context length and LM Studio version.
    Repeat the runs to estimate the spread between runs.
 
+Hardware used for the manuscript: the models were served by LM Studio on a workstation with
+one NVIDIA RTX PRO 6000 Blackwell GPU (96 GB of VRAM); the knowledge base, retrieval and
+grading ran on the CPU of a desktop computer that queried the server over the local network
+(through an SSH tunnel). Times per answer in `tables/answers.md` are wall-clock times
+measured at that client.
+
 Grading: numerical answers are graded on the first value with the expected unit
 (strict); the lenient criterion, any value within tolerance, is also reported because
 closed-book answers often list several candidate values. To re-apply the grader to stored

@@ -451,8 +451,8 @@ that do not name a material.
 \label{sec:answers}
 
 \begin{table*}[t]
-\caption{Accuracy (\%) of pre-trained models served by LM Studio, with retrieval (RAG) and
-without it (closed book), on the 25 curated and 300 database questions, graded on the first
+\caption{Accuracy (\%) of pre-trained models served by LM Studio on one NVIDIA RTX PRO 6000
+Blackwell GPU (96~GB of VRAM), with retrieval (RAG) and without it (closed book), on the 25 curated and 300 database questions, graded on the first
 stated value; citation validity and precision (\%) of the retrieval-augmented answers to the
 database questions; and number of closed-book answers that decline to answer. Retrieval:
 lexical embedder with exact-match bonus, $k=8$, numbered citations; temperature 0.2; one run
@@ -464,8 +464,14 @@ per model. $^\dagger$Run not complete ($n$ answers).}
 
 We evaluated pre-trained, instruction-tuned models that run on a single workstation:
 Llama-3.1-8B-Instruct and Gemma-3-12B (4-bit Q4\_K\_M quantization) and gpt-oss-20b (MXFP4),
-all served by LM Studio with default loading settings. Each question was asked once with the
-retrieved records and once without them (Table~\ref{tab:answers}).
+all served by LM Studio with default loading settings on one NVIDIA RTX PRO 6000 Blackwell
+GPU with 96~GB of VRAM. The knowledge base, retrieval and grading ran on the CPU of an
+ordinary desktop computer that queried the LM Studio server over the local network; only the
+language models used the GPU. Each question was asked once with the retrieved records and
+once without them (Table~\ref{tab:answers}). The mean wall-clock time per answer, measured at
+the client, was 1.4~s (Llama) and 2.0~s (Gemma) with retrieval, and 0.7~s and 22.7~s without
+it; the long closed-book times of Gemma reflect the lengthy explanations it writes when it has
+no records to draw on.
 
 With retrieval, both completed models answer essentially every question correctly: 100\% of
 the curated questions, and 99.7\% (Llama) and 100\% (Gemma) of the 300 database questions.

@@ -4,4 +4,4 @@
 | Gemma-3-12B | 100.0 | 28.0 | 100.0 | 4.3 | 100.0 / 97.3 | 6/325 | 2.0 / 22.7 |
 | gpt-oss-20b | 100.0 | 100.0* (n=14) | - | - | - | 0/14 | - / - |
 
-Accuracy in %. Curated: 25 questions; database: 300 questions generated from MC2D and JARVIS-DFT records. Retrieval: lexical embedder with exact-match bonus, k = 8, numbered citations; temperature 0.2. * = run not complete (n answers).
+Accuracy in %. Curated: 25 questions; database: 300 questions generated from MC2D and JARVIS-DFT records. Retrieval: lexical embedder with exact-match bonus, k = 8, numbered citations; temperature 0.2. Models served by LM Studio on one NVIDIA RTX PRO 6000 Blackwell GPU (96 GB VRAM). * = run not complete (n answers).
