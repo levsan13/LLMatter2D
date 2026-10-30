@@ -59,4 +59,6 @@ them, then JOSS for the software.
 - [ ] DFT validation of the top Archimedean candidates (relaxation, phonons, E_hull)
 - [x] Fig. 1 drawn in TikZ (check it renders as intended on Overleaf)
 - [x] Zenodo archive and DOI (concept DOI 10.5281/zenodo.23779294)
+- [ ] Attach a snapshot of the knowledge base used in the paper (data/raw + kb, with the
+      MC2D and JARVIS-DFT attributions and licences) to the next release
 - [ ] Add the author's ORCID to CITATION.cff and .zenodo.json
