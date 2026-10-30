@@ -53,8 +53,9 @@ them, then JOSS for the software.
 - [x] Benchmark of 300 questions generated from database records + 25 curated questions;
       retrieval results (Table III)
 - [ ] Extend the database questions to magnetism and stability
-- [ ] Answers of at least three pre-trained models in LM Studio, RAG vs closed-book; fix
-      temperature, quantisation and context length; repeat runs to estimate variance
+- [x] Answers of Llama-3.1-8B and Gemma-3-12B in LM Studio, RAG vs closed-book (Table IV)
+- [ ] Finish gpt-oss-20b (partial: curated RAG done, 14/25 curated closed-book, database
+      questions not run); repeat runs to estimate the run-to-run spread
 - [ ] DFT validation of the top Archimedean candidates (relaxation, phonons, E_hull)
 - [x] Fig. 1 drawn in TikZ (check it renders as intended on Overleaf)
 - [x] Zenodo archive and DOI (concept DOI 10.5281/zenodo.23779294)

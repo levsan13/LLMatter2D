@@ -1,0 +1,199 @@
+{
+ "llama-3.1-8b": {
+  "database": {
+   "rag": {
+    "n": 300,
+    "expected": 300,
+    "complete": true,
+    "accuracy": 0.9966666666666667,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 1.4468,
+    "citation_valid": 1.0,
+    "citation_precise": 0.9983108108108109,
+    "uncited": 4,
+    "by_category": {
+     "band gap (database)": 0.995,
+     "structure (database)": 1.0
+    }
+   },
+   "closed_book": {
+    "n": 300,
+    "expected": 300,
+    "complete": true,
+    "accuracy": 0.006666666666666667,
+    "errors": 0,
+    "refusals": 294,
+    "seconds": 0.7117666666666667,
+    "by_category": {
+     "band gap (database)": 0.0,
+     "structure (database)": 0.02
+    }
+   }
+  },
+  "curated": {
+   "rag": {
+    "n": 25,
+    "expected": 25,
+    "complete": true,
+    "accuracy": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 1.304,
+    "citation_valid": 1.0,
+    "citation_precise": 0.9090909090909091,
+    "uncited": 3,
+    "by_category": {
+     "ARPES": 1.0,
+     "Archimedean": 1.0,
+     "band gap": 1.0,
+     "correlated": 1.0,
+     "magnetism": 1.0,
+     "spin-orbit": 1.0,
+     "structure": 1.0,
+     "tight-binding": 1.0,
+     "topology": 1.0
+    }
+   },
+   "closed_book": {
+    "n": 25,
+    "expected": 25,
+    "complete": true,
+    "accuracy": 0.48,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 4.7404,
+    "by_category": {
+     "ARPES": 0.5,
+     "Archimedean": 0.0,
+     "band gap": 0.444,
+     "correlated": 1.0,
+     "magnetism": 0.5,
+     "spin-orbit": 0.0,
+     "structure": 1.0,
+     "tight-binding": 1.0,
+     "topology": 0.0
+    }
+   }
+  }
+ },
+ "gemma-3-12b": {
+  "database": {
+   "rag": {
+    "n": 300,
+    "expected": 300,
+    "complete": true,
+    "accuracy": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 2.0263666666666666,
+    "citation_valid": 1.0,
+    "citation_precise": 0.9727777777777777,
+    "uncited": 0,
+    "by_category": {
+     "band gap (database)": 1.0,
+     "structure (database)": 1.0
+    }
+   },
+   "closed_book": {
+    "n": 300,
+    "expected": 300,
+    "complete": true,
+    "accuracy": 0.043333333333333335,
+    "errors": 0,
+    "refusals": 6,
+    "seconds": 22.659333333333333,
+    "by_category": {
+     "band gap (database)": 0.04,
+     "structure (database)": 0.05
+    }
+   }
+  },
+  "curated": {
+   "rag": {
+    "n": 25,
+    "expected": 25,
+    "complete": true,
+    "accuracy": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 2.9828,
+    "citation_valid": 1.0,
+    "citation_precise": 0.968,
+    "uncited": 0,
+    "by_category": {
+     "ARPES": 1.0,
+     "Archimedean": 1.0,
+     "band gap": 1.0,
+     "correlated": 1.0,
+     "magnetism": 1.0,
+     "spin-orbit": 1.0,
+     "structure": 1.0,
+     "tight-binding": 1.0,
+     "topology": 1.0
+    }
+   },
+   "closed_book": {
+    "n": 25,
+    "expected": 25,
+    "complete": true,
+    "accuracy": 0.28,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 29.9748,
+    "by_category": {
+     "ARPES": 0.25,
+     "Archimedean": 0.0,
+     "band gap": 0.222,
+     "correlated": 1.0,
+     "magnetism": 1.0,
+     "spin-orbit": 0.0,
+     "structure": 0.333,
+     "tight-binding": 0.0,
+     "topology": 0.0
+    }
+   }
+  }
+ },
+ "gpt-oss-20b": {
+  "curated": {
+   "rag": {
+    "n": 25,
+    "expected": 25,
+    "complete": true,
+    "accuracy": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 2.7448,
+    "citation_valid": 1.0,
+    "citation_precise": 0.9722222222222222,
+    "uncited": 1,
+    "by_category": {
+     "ARPES": 1.0,
+     "Archimedean": 1.0,
+     "band gap": 1.0,
+     "correlated": 1.0,
+     "magnetism": 1.0,
+     "spin-orbit": 1.0,
+     "structure": 1.0,
+     "tight-binding": 1.0,
+     "topology": 1.0
+    }
+   },
+   "closed_book": {
+    "n": 14,
+    "expected": 25,
+    "complete": false,
+    "accuracy": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 2.230714285714286,
+    "by_category": {
+     "ARPES": 1.0,
+     "band gap": 1.0,
+     "spin-orbit": 1.0
+    }
+   }
+  }
+ }
+}

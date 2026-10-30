@@ -20,7 +20,8 @@ python paper/reproduce.py --llm lmstudio:<model>   # + RAG vs closed-book answer
 | Table I | Sites per cell, coordination, site density, bipartiteness, flat bands, band touchings | `scripts/table_archimedean.py` | `tables/archimedean.{md,tex}` |
 | Table II | Highest-ranked new Archimedean candidates (before DFT) | `scripts/table_candidates.py` | `tables/candidates.{md,tex}` |
 | Table III | Retrieval on the 3799-record knowledge base (embedder x formula bonus x k) | `scripts/table_retrieval.py` (via `reproduce.py --data`) | `tables/retrieval.{md,tex}`, `results/retrieval_full.json` |
-| Pending | Answer accuracy and citation quality, RAG vs closed-book, per LLM | `reproduce.py --llm <spec>` | `results/answers_<questions>_<llm>.{jsonl,md}` |
+| Table IV | Answer accuracy and citation quality, RAG vs closed-book, per pre-trained model | `reproduce.py --llm <spec>`, then `scripts/table_answers.py` | `tables/answers.{md,tex}`, `results/answers_*.jsonl`, `results/answers_summary.json` |
+| Sec. III D | Citing record ids vs record numbers (Llama-3.1-8B, 50 database questions) | `llmatter2d benchmark --citation-style id/number --limit 50` | `results/quick/*_idcite.*`, `results/quick/*_numcite.*` |
 
 ## Question sets
 
@@ -31,19 +32,35 @@ python paper/reproduce.py --llm lmstudio:<model>   # + RAG vs closed-book answer
 
 ## Running the pre-trained models (LM Studio)
 
-1. Load the model in LM Studio with a context length of at least 8k tokens and start the
-   server (Developer tab, or `lms server start`).
-2. Run, for each model:
+1. Start the LM Studio server (Developer tab, or `lms server start`). Models are loaded on
+   first use. If the server runs on another machine, forward its port over SSH and point
+   LLMatter2D to it:
 
    ```bash
-   python paper/reproduce.py --llm lmstudio:<model-id>               # all 325 questions
-   python paper/reproduce.py --llm lmstudio:<model-id> --limit 50    # quick check
+   ssh -N -o ServerAliveInterval=30 -L 1234:127.0.0.1:1234 user@server
+   export LMSTUDIO_HOST=http://127.0.0.1:1234     # PowerShell: $env:LMSTUDIO_HOST = "..."
    ```
 
-   Each question is asked twice (with and without retrieval). With a 7-8B model on a
-   consumer GPU, expect roughly one to a few hours for the full set.
+2. Run, for each model (the models of the manuscript are `meta-llama-3.1-8b-instruct`,
+   `google/gemma-3-12b` and `openai/gpt-oss-20b`):
+
+   ```bash
+   python paper/reproduce.py --llm lmstudio:meta-llama-3.1-8b-instruct --tag llama-3.1-8b
+   python paper/reproduce.py --llm lmstudio:google/gemma-3-12b --tag gemma-3-12b
+   python paper/reproduce.py --llm lmstudio:openai/gpt-oss-20b --tag gpt-oss-20b
+   ```
+
+   Each question is asked twice (with and without retrieval). Answers are written as they
+   arrive and runs resume automatically (`--resume`), so an interrupted run is continued
+   by repeating the command. After each model the answers table (`tables/answers.md`)
+   is rebuilt.
 3. Record the model identifier, quantisation, context length and LM Studio version.
-   Repeat the runs (at least three) to estimate the spread.
+   Repeat the runs to estimate the spread between runs.
+
+Grading: numerical answers are graded on the first value with the expected unit
+(strict); the lenient criterion, any value within tolerance, is also reported because
+closed-book answers often list several candidate values. To re-apply the grader to stored
+answers after a change: `llmatter2d regrade <results.jsonl> <questions.jsonl>`.
 
 ## Manuscript (LaTeX, REVTeX 4.2)
 
@@ -63,4 +80,8 @@ python paper/manuscript/make_overleaf_zip.py   # -> paper/manuscript/LLMatter2D_
 * Figs. 2-3 and Tables I-II are final for the nearest-neighbour model and screening heuristic.
 * Table III is computed on the full knowledge base (MC2D + JARVIS-2D + seed, 3799 records,
   built on 2026-10-29). C2DB and 2DMatPedia can be added when their files are available.
-* The answers of pre-trained models (RAG vs closed-book) are still to be run in LM Studio.
+* Table IV (2026-10-30): Llama-3.1-8B and Gemma-3-12B complete (25 + 300 questions, RAG and
+  closed book). gpt-oss-20b is partial: 25 RAG answers and 14 of 25 closed-book answers on
+  the curated questions; the database questions are still to run. Continue with
+  `python paper/reproduce.py --llm lmstudio:openai/gpt-oss-20b --tag gpt-oss-20b`, which
+  resumes from the saved answers.

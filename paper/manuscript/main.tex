@@ -52,9 +52,11 @@ and JARVIS-DFT, the hybrid retrieval places the record that holds the answer fir
 99.7--100\% of 300 database-derived questions, whereas the same embeddings without exact
 formula matching reach 25\% (lexical) and 74\% (dense). A benchmark compares
 retrieval-augmented and closed-book answers of the same model with unit-aware grading and
-citation metrics.
-\pending{one sentence with the answer accuracy of the pre-trained models with and without
-retrieval.}
+citation metrics. With retrieval, locally served Llama-3.1-8B and Gemma-3-12B answer
+99.7--100\% of the database questions correctly and cite valid records, against 0.7--4.3\%
+without retrieval; on 25 curated questions about well-known monolayers, closed-book accuracy
+is 28--48\% and retrieval-augmented accuracy 100\%.
+\pending{results for gpt-oss-20b (run in progress).}
 \end{abstract}
 
 \maketitle
@@ -234,11 +236,14 @@ layer thickness.
 The default backend is a pre-trained instruction-tuned model served locally by
 LM Studio~\cite{LMStudio} through its OpenAI-compatible endpoint (temperature 0.2;
 reasoning blocks are removed from the answer); Ollama~\cite{Ollama} and hosted models are
-also supported. The retrieved cards are wrapped in \code{<record id=\ldots>} blocks. The
-system prompt instructs the model to treat the records as the source of numerical values,
-to cite the record identifier after each value, to state the method behind every number and
-recall that semilocal DFT underestimates band gaps, to separate computed, measured and
-predicted values, and to say when the records do not contain the answer. Task-specific
+also supported. The retrieved cards are wrapped in numbered \code{<record n=\ldots\ id=\ldots>}
+blocks. The system prompt instructs the model to treat the records as the source of
+numerical values, to cite the record number in square brackets after each value, to state
+the method behind every number and recall that semilocal DFT underestimates band gaps, to
+separate computed, measured and predicted values, and to say when the records do not contain
+the answer. The pipeline then replaces each cited number by the identifier of the record, so
+that answers carry stable, source-prefixed citations; citing identifiers directly is
+available as an option but fails with small models (Sec.~\ref{sec:answers}). Task-specific
 prompts cover question answering, the analysis of a new structure and the review of
 generated candidates.
 
@@ -296,9 +301,11 @@ A benchmark question specifies the records $\mathcal R$ that contain the answer,
 a reference value $q^\ast$ with unit and tolerance $\tau$ or keyword lists. For retrieval we
 report recall@$k$, $|\mathcal R\cap\mathcal T_k|/|\mathcal R|$, where $\mathcal T_k$ are the
 $k$ retrieved records, and the mean reciprocal rank (MRR). A numerical answer is correct if
-it contains a quantity with the expected unit within $\tau$ of $q^\ast$; quantities are
-parsed with conversion between eV and meV, \AA{} and nm, and m/s and km/s, including
-scientific notation. For retrieval-augmented answers we also report the citation validity,
+the first quantity it states with the expected unit lies within $\tau$ of $q^\ast$. This
+strict criterion matters for closed-book answers, which often list several candidate values;
+the lenient criterion, any stated quantity within $\tau$, is also reported. Quantities are
+parsed from plain text, Unicode superscripts and \LaTeX{} notation, with conversion between eV
+and meV, \AA{} and nm, and m/s and km/s, including scientific notation. For retrieval-augmented answers we also report the citation validity,
 $|\mathcal C\cap\mathcal T_k|/|\mathcal C|$, and the citation precision,
 $|\mathcal C\cap\mathcal R|/|\mathcal C|$, where $\mathcal C$ is the set of cited record
 identifiers. Each question is asked to the same model with retrieval (RAG) and without it
@@ -441,11 +448,58 @@ embedder with the exact-match bonus, with dense embeddings as an option for free
 that do not name a material.
 
 \subsection{Answers of pre-trained models}
+\label{sec:answers}
 
-\pending{accuracy and citation metrics for RAG and closed-book answers on the 25 curated and
-300 database questions, for at least three pre-trained models served by LM Studio, with model
-identifiers, quantization, context length and repeated runs. Command:
-\code{python paper/reproduce.py --llm lmstudio:<model>}.}
+\begin{table*}[t]
+\caption{Accuracy (\%) of pre-trained models served by LM Studio, with retrieval (RAG) and
+without it (closed book), on the 25 curated and 300 database questions, graded on the first
+stated value; citation validity and precision (\%) of the retrieval-augmented answers to the
+database questions; and number of closed-book answers that decline to answer. Retrieval:
+lexical embedder with exact-match bonus, $k=8$, numbered citations; temperature 0.2; one run
+per model. $^\dagger$Run not complete ($n$ answers).}
+\label{tab:answers}
+\footnotesize
+\input{answers}
+\end{table*}
+
+We evaluated pre-trained, instruction-tuned models that run on a single workstation:
+Llama-3.1-8B-Instruct and Gemma-3-12B (4-bit Q4\_K\_M quantization) and gpt-oss-20b (MXFP4),
+all served by LM Studio with default loading settings. Each question was asked once with the
+retrieved records and once without them (Table~\ref{tab:answers}).
+
+With retrieval, both completed models answer essentially every question correctly: 100\% of
+the curated questions, and 99.7\% (Llama) and 100\% (Gemma) of the 300 database questions.
+All their citations point to retrieved records; 97--100\% of the citations in answers to
+the database questions, and 91--97\% for the curated questions, where several records
+describe the same compound, point to the records that hold the answer. The single error in 650 retrieval-augmented answers illustrates the failure that the
+method labels are meant to prevent: asked for the TBmBJ gap of CeSe$_2$ in JARVIS-DFT, Llama
+returned the OptB88vdW value listed first in the same record (1.12~eV instead of 0.549~eV).
+
+Without retrieval the picture is reversed. On the database questions, Llama declines to
+answer 294 of the 300 closed-book questions (``I cannot verify\ldots'') and is correct in
+0.7\% of them. Gemma does not decline; instead it presents fabricated database entries
+(``according to MC2D\ldots'') and lists several candidate values per answer (a median of 5
+quantities with the expected unit), which gives 12\% accuracy with the lenient criterion but
+only 4.3\% when the first stated value is graded. On the curated questions, which concern
+well-known monolayers, closed-book accuracy is 48\% (Llama) and 28\% (Gemma) with the strict
+criterion (52\% and 64\% with the lenient one). Band gaps by method are answered correctly
+in 4 (Llama) and 2 (Gemma) of 9 cases, and neither model gives the spin-orbit gaps of the
+Xenes, the ARPES spin-orbit splittings of MoS$_2$ and MoSe$_2$, the list of quantum spin Hall
+Xenes or the Archimedean lattice of graphenylene. In contrast, the first 14 closed-book answers of
+gpt-oss-20b, on band gaps, spin-orbit gaps and ARPES splittings of well-known monolayers, are
+all correct: larger models do memorize textbook values, but retrieval remains indispensable
+for values that are specific to a database calculation. \pending{complete gpt-oss-20b run
+and repeated runs to estimate the run-to-run spread; in two runs of Llama on the curated
+questions, closed-book accuracy was 44\% and 48\% with the strict criterion.}
+
+Two practical findings shaped the pipeline. First, when Llama was asked to cite record
+identifiers directly, only 72.5\% of its citations on 50 database questions pointed to
+retrieved records: it mis-copied the 36-character MC2D identifiers or invented identifiers in
+the style of the curated records. Citing record numbers that the pipeline maps to identifiers
+raised citation validity to 100\% (precision 99\%) with unchanged accuracy (98\% on the same
+50 questions). Second, answer grading must parse the notations that models actually use:
+gpt-oss-20b writes quantities in \LaTeX{} (e.g., \verb|1\times10^{6}\,\text{m s}^{-1}|) and cites
+in full-width brackets, both of which a naive parser misses.
 
 \subsection{Case study}
 
@@ -486,8 +540,15 @@ automated DFT loop that feeds validated candidates back into the knowledge base.
 
 We have introduced LLMatter2D, a retrieval-augmented framework that grounds locally served
 pre-trained language models in method-aware, citable data on two-dimensional materials and
-couples them to a generator of new materials based on the Archimedean tilings.
-\pending{main quantitative conclusions from the benchmark and from the DFT validation.}
+couples them to a generator of new materials based on the Archimedean tilings. On 3799
+monolayers from MC2D and JARVIS-DFT, exact formula matching on top of embedding similarity
+retrieves the record that holds the answer at rank 1 for 99.7--100\% of database-derived
+questions. With these records, 8--12B models served on a workstation answer 99.7--100\% of
+the questions correctly and cite valid records, whereas the same models without retrieval
+either decline or produce fabricated values (0.7--4.3\% correct). Grounding, not model size,
+is what makes such models usable for quantitative questions about specific 2D materials.
+\pending{conclusions from the complete gpt-oss-20b run and from the DFT validation of the
+Archimedean candidates.}
 
 \section*{Data availability}
 

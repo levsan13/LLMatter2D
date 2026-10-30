@@ -23,6 +23,7 @@ FILES = {
     "tables/archimedean.tex": PAPER / "tables" / "archimedean.tex",
     "tables/candidates.tex": PAPER / "tables" / "candidates.tex",
     "tables/retrieval.tex": PAPER / "tables" / "retrieval.tex",
+    "tables/answers.tex": PAPER / "tables" / "answers.tex",
 }
 
 
