@@ -211,6 +211,7 @@ def cmd_benchmark(args) -> None:
 
 def cmd_regrade(args) -> None:
     import json
+    import re
 
     from .evaluation import format_summary, load_benchmark, regrade, summarize
 
@@ -221,7 +222,8 @@ def cmd_regrade(args) -> None:
                     encoding="utf-8")
     md = path.with_suffix(".md")
     title = md.read_text(encoding="utf-8").splitlines()[0].lstrip("# ") if md.exists() else ""
-    report = format_summary(summarize(rows), title + " | regraded")
+    title = re.sub(r"(\s*\|\s*regraded)+\s*$", "", title) + " | regraded"
+    report = format_summary(summarize(rows), title)
     md.write_text(report + "\n", encoding="utf-8")
     print(report)
 

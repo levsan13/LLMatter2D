@@ -193,7 +193,7 @@
       "accuracy": 0.043333333333333335,
       "accuracy_lenient": 0.12,
       "errors": 0,
-      "refusals": 6,
+      "refusals": 8,
       "seconds": 22.659333333333333
      }
     ],
@@ -206,7 +206,7 @@
     "accuracy_max": 0.043333333333333335,
     "accuracy_lenient": 0.12,
     "errors": 0,
-    "refusals": 6,
+    "refusals": 8,
     "seconds": 22.659333333333333,
     "by_category": {
      "band gap (database)": 0.04,
@@ -296,6 +296,85 @@
   }
  },
  "gpt-oss-20b": {
+  "database": {
+   "rag": {
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.5209666666666667,
+      "citation_valid": 1.0,
+      "citation_precise": 1.0,
+      "uncited": 30
+     },
+     {
+      "run": 2,
+      "n": 300,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.5134,
+      "citation_valid": 1.0,
+      "citation_precise": 1.0,
+      "uncited": 28
+     }
+    ],
+    "n_runs": 2,
+    "n_partial": 0,
+    "complete": true,
+    "n": 300,
+    "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 0.5171833333333333,
+    "citation_valid": 1.0,
+    "citation_precise": 1.0,
+    "uncited": 29,
+    "by_category": {
+     "band gap (database)": 1.0,
+     "structure (database)": 1.0
+    }
+   },
+   "closed_book": {
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 0.07,
+      "accuracy_lenient": 0.07,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.5252333333333333
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
+    "complete": true,
+    "n": 300,
+    "accuracy": 0.07,
+    "accuracy_min": 0.07,
+    "accuracy_max": 0.07,
+    "accuracy_lenient": 0.07,
+    "errors": 0,
+    "refusals": 0,
+    "seconds": 0.5252333333333333,
+    "by_category": {
+     "band gap (database)": 0.055,
+     "structure (database)": 0.1
+    }
+   }
+  },
   "curated": {
    "rag": {
     "runs": [
@@ -307,13 +386,39 @@
       "accuracy_lenient": 1.0,
       "errors": 0,
       "refusals": 0,
-      "seconds": 2.7448,
+      "seconds": 0.5744,
       "citation_valid": 1.0,
-      "citation_precise": 0.9722222222222222,
-      "uncited": 1
+      "citation_precise": 1.0,
+      "uncited": 3
+     },
+     {
+      "run": 2,
+      "n": 25,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.5084,
+      "citation_valid": 1.0,
+      "citation_precise": 0.9710144927536232,
+      "uncited": 2
+     },
+     {
+      "run": 3,
+      "n": 25,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.4896,
+      "citation_valid": 1.0,
+      "citation_precise": 1.0,
+      "uncited": 0
      }
     ],
-    "n_runs": 1,
+    "n_runs": 3,
     "n_partial": 0,
     "complete": true,
     "n": 25,
@@ -323,10 +428,10 @@
     "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
-    "seconds": 2.7448,
+    "seconds": 0.5241333333333333,
     "citation_valid": 1.0,
-    "citation_precise": 0.9722222222222222,
-    "uncited": 1,
+    "citation_precise": 0.9903381642512077,
+    "uncited": 1.6666666666666667,
     "by_category": {
      "ARPES": 1.0,
      "Archimedean": 1.0,
@@ -343,30 +448,56 @@
     "runs": [
      {
       "run": 1,
-      "n": 14,
-      "complete": false,
-      "accuracy": 1.0,
-      "accuracy_lenient": 1.0,
+      "n": 25,
+      "complete": true,
+      "accuracy": 0.96,
+      "accuracy_lenient": 0.96,
       "errors": 0,
       "refusals": 0,
-      "seconds": 2.230714285714286
+      "seconds": 1.0492
+     },
+     {
+      "run": 2,
+      "n": 25,
+      "complete": true,
+      "accuracy": 0.88,
+      "accuracy_lenient": 0.96,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 1.0272000000000001
+     },
+     {
+      "run": 3,
+      "n": 25,
+      "complete": true,
+      "accuracy": 0.88,
+      "accuracy_lenient": 0.92,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 0.8248
      }
     ],
-    "n_runs": 0,
-    "n_partial": 1,
-    "complete": false,
-    "n": 14,
-    "accuracy": 1.0,
-    "accuracy_min": 1.0,
-    "accuracy_max": 1.0,
-    "accuracy_lenient": 1.0,
+    "n_runs": 3,
+    "n_partial": 0,
+    "complete": true,
+    "n": 25,
+    "accuracy": 0.9066666666666666,
+    "accuracy_min": 0.88,
+    "accuracy_max": 0.96,
+    "accuracy_lenient": 0.9466666666666667,
     "errors": 0,
     "refusals": 0,
-    "seconds": 2.230714285714286,
+    "seconds": 0.9670666666666666,
     "by_category": {
      "ARPES": 1.0,
-     "band gap": 1.0,
-     "spin-orbit": 1.0
+     "Archimedean": 0.0,
+     "band gap": 0.926,
+     "correlated": 1.0,
+     "magnetism": 1.0,
+     "spin-orbit": 0.778,
+     "structure": 1.0,
+     "tight-binding": 1.0,
+     "topology": 1.0
     }
    }
   }

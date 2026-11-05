@@ -66,14 +66,15 @@ python paper/reproduce.py --llm lmstudio:<model>   # + RAG vs closed-book answer
        --sets seed_questions
    ```
 
-   `tables/answers.md` reports the mean over complete runs with the range in parentheses,
-   and lists how many complete runs enter each cell.
+   `tables/answers.md` reports the mean over complete runs with the range in parentheses
+   where the runs differ, and lists how many complete runs enter each cell.
 
-Hardware used for the manuscript: the models were served by LM Studio on a workstation with
-one NVIDIA RTX PRO 6000 Blackwell GPU (96 GB of VRAM); the knowledge base, retrieval and
-grading ran on the CPU of a desktop computer that queried the server over the local network
-(through an SSH tunnel). Times per answer in `tables/answers.md` are wall-clock times
-measured at that client.
+Hardware used for the manuscript: the models were served by LM Studio, each on one NVIDIA
+RTX PRO 6000 Blackwell GPU (96 GB of VRAM): Llama-3.1-8B and Gemma-3-12B on one workstation
+(reached through an SSH tunnel), gpt-oss-20b on a second workstation with the same GPU
+(reached directly on the local network, `LMSTUDIO_HOST=http://<host>:1234`). The knowledge
+base, retrieval and grading ran on the CPU of a desktop computer that queried the servers.
+Times per answer in `tables/answers.md` are wall-clock times measured at that client.
 
 Knowledge-base snapshot: `python paper/scripts/make_kb_snapshot.py` bundles the converted
 records (`data/raw/*.jsonl`) and both indexed knowledge bases into
@@ -83,9 +84,12 @@ GitHub releases; unzip it in the repository root to reproduce the benchmark with
 downloading the databases again.
 
 Grading: numerical answers are graded on the first value with the expected unit
-(strict); the lenient criterion, any value within tolerance, is also reported because
-closed-book answers often list several candidate values. To re-apply the grader to stored
-answers after a change: `llmatter2d regrade <results.jsonl> <questions.jsonl>`.
+(strict; for a range such as `20-40 meV`, the bound that carries the unit); the lenient
+criterion, any value within tolerance, is also reported because closed-book answers often
+list several candidate values. The parser reads LaTeX (also bold, `\mathbf{3.73~\text{\AA}}`)
+and decimal commas; keywords are matched after Unicode normalization (non-breaking hyphens);
+refusals are detected with straight or typographic apostrophes. To re-apply the grader to
+stored answers after a change: `llmatter2d regrade <results.jsonl> <questions.jsonl>`.
 
 ## Manuscript (LaTeX, REVTeX 4.2)
 
@@ -105,8 +109,10 @@ python paper/manuscript/make_overleaf_zip.py   # -> paper/manuscript/LLMatter2D_
 * Figs. 2-3 and Tables I-II are final for the nearest-neighbour model and screening heuristic.
 * Table III is computed on the full knowledge base (MC2D + JARVIS-2D + seed, 3799 records,
   built on 2026-10-29). C2DB and 2DMatPedia can be added when their files are available.
-* Table IV (2026-10-30): Llama-3.1-8B and Gemma-3-12B complete (25 + 300 questions, RAG and
-  closed book). gpt-oss-20b is partial: 25 RAG answers and 14 of 25 closed-book answers on
-  the curated questions; the database questions are still to run. Continue with
-  `python paper/reproduce.py --llm lmstudio:openai/gpt-oss-20b --tag gpt-oss-20b`, which
-  resumes from the saved answers.
+* Table IV (2026-11-05): all three models complete (25 + 300 questions, RAG and closed
+  book). gpt-oss-20b has three runs on the curated questions and two retrieval-augmented runs
+  on the database questions (second workstation); its interrupted pilot on the first
+  workstation (39 answers) is kept in `results/quick/seed_gpt-oss-20b_pilot_ws1.*` and is not
+  part of the table. Still to do: runs 2 and 3 of Llama-3.1-8B and Gemma-3-12B on the curated
+  questions and run 2 with retrieval on the database questions, e.g.
+  `python paper/reproduce.py --llm lmstudio:meta-llama-3.1-8b-instruct --tag llama-3.1-8b --run 2 --sets seed_questions`.

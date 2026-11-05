@@ -58,10 +58,23 @@ def test_fullwidth_brackets_are_resolved():
     (r"t_{\text{NN}} = -\,2.80~\text{eV}", (2.80, "eV")),
     (r"\(a = 2.460\ \text{Å}\)", (2.46, "A")),
     (r"$0.145\,\mathrm{eV}$", (0.145, "eV")),
+    (r"\(a = b = \mathbf{11.268\;Å}\)", (11.268, "A")),          # bold values (gpt-oss)
+    (r"\[ a = \mathbf{3.73~\text{\AA}} \]", (3.73, "A")),
+    (r"\[ a = \mathbf{4.48}\;\text{Å} \]", (4.48, "A")),
+    (r"\(E_g \approx 1.3\;{\rm eV}\)", (1.3, "eV")),
+    ("a = 2.46 Å", (2.46, "A")),                              # U+212B angstrom sign
 ])
 def test_latex_quantities(text, expected):
     (value, unit), = extract_quantities(text)
     assert unit == expected[1] and value == pytest.approx(expected[0])
+
+
+def test_keywords_ignore_typographic_hyphens():
+    from llmatter2d.evaluation import BenchmarkItem, grade_answer
+    item = BenchmarkItem(id="cdw", question="?", keywords_any=["charge-density", "Star-of-David"])
+    text = "die kommensurierte Charge‑Density‑Wave‑Phase (Star‑of‑David)"
+    assert grade_answer(item, text)["correct"] is True
+    assert grade_answer(item, "a Mott insulator")["correct"] is False
 
 
 def test_id_style_keeps_text(kb):
@@ -86,4 +99,6 @@ def test_regrade_fixes_stored_rows(kb, tmp_path):
     path = tmp_path / "r.jsonl"
     path.write_text(json.dumps(stale) + "\n", encoding="utf-8")
     main(["regrade", str(path), "benchmarks/seed_questions.jsonl"])
+    main(["regrade", str(path), "benchmarks/seed_questions.jsonl"])  # twice: one suffix only
     assert json.loads(path.read_text(encoding="utf-8"))["correct"] is True
+    assert path.with_suffix(".md").read_text(encoding="utf-8").count("regraded") == 1

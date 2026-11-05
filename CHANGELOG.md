@@ -37,6 +37,18 @@ All notable changes to LLMatter2D are listed here. The project follows
 
 ### Fixed
 - Signed exponents (`1e+06`, `10^+6`) are parsed by the answer grader.
+- The grader reads bold LaTeX values (`\mathbf{3.73~\text{\AA}}`, `\textbf`, `{\rm eV}`) and
+  the angstrom sign U+212B; keywords are matched after Unicode normalization, so that
+  non-breaking hyphens (`Charge‑Density`, U+2011) count as hyphens. Found in the answers of
+  gpt-oss-20b (6 of 1050 correct answers had been graded wrong); all stored answers were
+  regraded, the scores of the other models did not change.
+- Refusal detection in `table_answers.py` accepts typographic apostrophes (`I can’t`).
+- `llmatter2d regrade` appends a single `| regraded` to the summary title.
+
+### Results
+- gpt-oss-20b (second workstation, RTX PRO 6000 Blackwell): three runs on the curated
+  questions and two retrieval-augmented runs on the database questions; Table IV shows
+  repeated runs as a mean with the range where the runs differ.
 
 ## 0.1.1 (2026-10-28)
 

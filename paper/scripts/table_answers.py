@@ -7,7 +7,7 @@ Reads paper/results/answers_<questions>_<model>[_run<N>].jsonl written by
 paper/tables/answers.{md,tex} and paper/results/answers_summary.json.
 
 Repeated runs (`_run2`, `_run3`, ...) are aggregated: each cell gives the mean accuracy
-over the complete runs and, when there are several, the range over runs in parentheses.
+over the complete runs and, when they differ, the range over runs in parentheses.
 A cell that only has an incomplete run is marked (fewer answers than questions).
 """
 
@@ -32,6 +32,13 @@ MODEL_INFO = {  # identifier in LM Studio, quantization, label
 REFUSAL = re.compile(r"\b(I cannot|I can't|I can not|I am unable|I'm unable|I do not have access|"
                      r"I don't have access|not able to provide|cannot verify|cannot provide)\b",
                      re.IGNORECASE)
+
+
+def is_refusal(text: str) -> bool:
+    """Refusal phrase in an answer; typographic apostrophes (I can’t) count as plain ones."""
+    return bool(REFUSAL.search(text.replace("’", "'").replace("ʼ", "'")))
+
+
 _FILE = re.compile(r"answers_(seed_questions|db_questions)_(.+?)(?:_run(\d+))?\.jsonl")
 
 
@@ -62,7 +69,7 @@ def run_stats(rows: list[dict], mode: str, expected: int) -> dict:
         "accuracy_lenient": _mean(float(r["correct_lenient"]) for r in rs
                                   if r.get("correct_lenient") is not None),
         "errors": sum(1 for r in rows if r["mode"] == mode and r.get("error")),
-        "refusals": sum(1 for r in rs if REFUSAL.search(r.get("answer", "") or "")),
+        "refusals": sum(1 for r in rs if is_refusal(r.get("answer", "") or "")),
         "seconds": _mean(r.get("seconds") for r in rs),
     }
     if mode == "rag":
@@ -125,7 +132,9 @@ def _cell(stats: dict | None, key: str = "accuracy", partial_mark: str = "*",
         return "-"
     txt = f"{100 * stats[key]:.1f}"
     if key == "accuracy" and stats.get("n_runs", 1) > 1:
-        txt += f" ({100 * stats['accuracy_min']:.1f}{dash}{100 * stats['accuracy_max']:.1f})"
+        lo, hi = f"{100 * stats['accuracy_min']:.1f}", f"{100 * stats['accuracy_max']:.1f}"
+        if lo != hi:  # identical runs: the mean says it all
+            txt += f" ({lo}{dash}{hi})"
     if not stats.get("complete", True):
         txt += f"{partial_mark} (n={stats['n']})"
     return txt
@@ -169,11 +178,13 @@ def to_markdown(summary: dict) -> str:
                           for x in (rag_db, cb_db))
         lines.append(f"| {label} | {_cell(cur.get('rag'))} | {_cell(cur.get('closed_book'))} "
                      f"| {_cell(rag_db)} | {_cell(cb_db)} | {cites} | {_refusals(db)} | {secs} |")
-    lines += ["", "Accuracy in %: mean over complete runs, range over runs in parentheses. "
-              "Curated: 25 questions; database: 300 questions generated from MC2D and JARVIS-DFT "
-              "records. Retrieval: lexical embedder with exact-match bonus, k = 8, numbered "
-              "citations; temperature 0.2. Models served by LM Studio on one NVIDIA RTX PRO 6000 "
-              "Blackwell GPU (96 GB VRAM). * = run not complete (n answers).", "",
+    lines += ["", "Accuracy in %: mean over complete runs, range over runs in parentheses when "
+              "the runs differ. Curated: 25 questions; database: 300 questions generated from MC2D "
+              "and JARVIS-DFT records. Retrieval: lexical embedder with exact-match bonus, k = 8, "
+              "numbered citations; temperature 0.2. Models served by LM Studio, each on one NVIDIA "
+              "RTX PRO 6000 Blackwell GPU (96 GB VRAM): Llama and Gemma on one workstation, "
+              "gpt-oss-20b on a second one with the same GPU. * = run not complete (n answers).",
+              "",
               _runs_note(summary)]
     return "\n".join(lines) + "\n"
 

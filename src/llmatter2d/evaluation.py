@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from statistics import mean
@@ -82,7 +83,9 @@ _QUANTITY = re.compile(
 
 
 _LATEX_SUBS = [
-    (re.compile(r"\\(?:text|mathrm|rm|mbox)\s*\{([^{}]*)\}"), r"\1"),  # \text{eV} -> eV
+    # font and text commands: \text{eV}, \mathbf{1.73~eV}, {\rm eV} -> braces dropped below
+    (re.compile(r"\\(?:textbf|textit|textrm|text|mathbf|mathrm|mathit|mathsf|boldsymbol|bm|"
+                r"mbox|operatorname|rm|bf|it)\b\s*"), ""),
     (re.compile(r"\\[()\[\]]"), " "),                                 # \( \) \[ \]
     (re.compile(r"\\times|\\cdot"), "×"),
     (re.compile(r"\\[,;:! ]|~|\\quad|\\qquad"), " "),                 # thin spaces
@@ -103,7 +106,7 @@ def extract_quantities(text: str) -> list[tuple[float, str]]:
     Plain text, Unicode superscripts and LaTeX notation (as written by some models,
     e.g. ``1\\times10^{6}\\,\\text{m s}^{-1}``) are understood.
     """
-    text = _strip_latex(text.translate(_SUPERSCRIPT))
+    text = _strip_latex(text.translate(_SUPERSCRIPT)).replace("Å", "Å")  # angstrom sign
     out = []
     for mant, exp1, exp2, unit in _QUANTITY.findall(text):
         value = float(mant.replace(",", "."))
@@ -117,6 +120,16 @@ def extract_quantities(text: str) -> list[tuple[float, str]]:
             value *= factor
         out.append((value, u))
     return out
+
+
+_DASHES = str.maketrans({c: "-" for c in "‐‑‒–—―−"} | {"­": None})
+
+
+def normalize_text(text: str) -> str:
+    """Lower-cased text for keyword matching: Unicode compatibility forms (NFKC: no-break
+    spaces, full-width letters) and typographic hyphens/dashes (``Charge‑Density``, written
+    with U+2011 by some models) folded to plain ASCII."""
+    return unicodedata.normalize("NFKC", text).translate(_DASHES).lower()
 
 
 _CITATION = re.compile(r"\[([^\[\]]+)\]")
@@ -140,7 +153,7 @@ def grade_answer(item: BenchmarkItem, text: str) -> dict[str, Any]:
     score by chance. The lenient criterion (any quantity within tolerance) is kept as
     ``correct_lenient``.
     """
-    low = text.lower()
+    low = normalize_text(text)
     result: dict[str, Any] = {}
     if item.answer_value is not None:
         unit = _UNIT_ALIASES.get((item.unit or "").lower(), item.unit)
@@ -151,8 +164,9 @@ def grade_answer(item: BenchmarkItem, text: str) -> dict[str, Any]:
         result["numeric_first_ok"] = bool(values) and abs(values[0] - item.answer_value) <= tol
         result["n_values"] = len(values)
     if item.keywords_all or item.keywords_any:
-        ok_all = all(k.lower() in low for k in item.keywords_all)
-        ok_any = (not item.keywords_any) or any(k.lower() in low for k in item.keywords_any)
+        ok_all = all(normalize_text(k) in low for k in item.keywords_all)
+        ok_any = (not item.keywords_any) or any(normalize_text(k) in low
+                                                for k in item.keywords_any)
         result["keywords_ok"] = ok_all and ok_any
     strict = [v for k, v in result.items() if k in ("numeric_first_ok", "keywords_ok")]
     lenient = [v for k, v in result.items() if k in ("numeric_ok", "keywords_ok")]
