@@ -22,11 +22,18 @@ All notable changes to LLMatter2D are listed here. The project follows
   per-question retries and an automatic stop after three consecutive server failures;
   answers are written as they arrive.
 - `llmatter2d regrade` re-applies the grader to stored answers.
-- `paper/scripts/table_answers.py`: table of RAG vs closed-book answers per model.
+- `paper/scripts/table_answers.py`: table of RAG vs closed-book answers per model; repeated
+  runs (`*_run<N>.jsonl`, `paper/reproduce.py --run N --sets ... --modes ...`) are
+  aggregated as mean with the range over complete runs.
+- `paper/scripts/make_kb_snapshot.py`: zip of the converted records and indexed knowledge
+  bases with sources, CC BY 4.0 licences, citations and checksums, for the GitHub releases.
 
 ### Changed
 - Numerical answers are graded on the first quantity with the expected unit; the lenient
   any-quantity criterion is reported as `accuracy_lenient`.
+- Figures are written without creation dates, so regenerating them gives identical files.
+- The manuscript also cites the MC2D expansion (Campi et al., ACS Nano 2023) and the
+  JARVIS-DFT 2D figshare dataset, and states their CC BY 4.0 licences.
 
 ### Fixed
 - Signed exponents (`1e+06`, `10^+6`) are parsed by the answer grader.

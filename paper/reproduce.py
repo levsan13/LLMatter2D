@@ -48,12 +48,23 @@ def build_data() -> None:
         "--kb", f"hashing={KB_HASHING}", f"bge-small={KB_DENSE}")
 
 
-def run_answers(llm: str, kb: Path, k: str, limit: str | None, tag: str | None) -> None:
+QUESTION_SETS = ("seed_questions", "db_questions")
+MODES = ("rag", "closed_book")
+
+
+def answers_path(qset: str, tag: str, run_index: int = 1) -> Path:
+    """Run 1 is answers_<set>_<tag>.jsonl; repeated runs add a _run<N> suffix."""
+    suffix = "" if run_index == 1 else f"_run{run_index}"
+    return PAPER / "results" / f"answers_{qset}_{tag}{suffix}.jsonl"
+
+
+def run_answers(llm: str, kb: Path, k: str, limit: str | None, tag: str | None,
+                sets=QUESTION_SETS, modes=MODES, run_index: int = 1) -> None:
     tag = tag or re.sub(r"[^A-Za-z0-9_.-]+", "_", llm.split(":", 1)[-1].split("/")[-1])
-    for name in ("seed_questions", "db_questions"):
+    for name in sets:
         args = ["-m", "llmatter2d.cli", "benchmark", str(ROOT / "benchmarks" / f"{name}.jsonl"),
-                "--kb", str(kb), "-k", k, "--llm", llm, "--mode", "rag", "closed_book",
-                "--resume", "-o", str(PAPER / "results" / f"answers_{name}_{tag}.jsonl")]
+                "--kb", str(kb), "-k", k, "--llm", llm, "--mode", *modes,
+                "--resume", "-o", str(answers_path(name, tag, run_index))]
         if limit:
             args += ["--limit", limit]
         run(*args)
@@ -68,6 +79,10 @@ def main() -> None:
     p.add_argument("-k", default="8")
     p.add_argument("--limit", help="random subset of questions per benchmark file")
     p.add_argument("--tag", help="short model name used in result file names")
+    p.add_argument("--run", type=int, default=1,
+                   help="repetition index; runs >= 2 are written to *_run<N>.jsonl")
+    p.add_argument("--sets", nargs="+", choices=QUESTION_SETS, default=list(QUESTION_SETS))
+    p.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES))
     a = p.parse_args()
 
     run(str(PAPER / "scripts" / "fig_archimedean.py"))
@@ -76,7 +91,7 @@ def main() -> None:
     if a.data:
         build_data()
     if a.llm:
-        run_answers(a.llm, Path(a.kb), a.k, a.limit, a.tag)
+        run_answers(a.llm, Path(a.kb), a.k, a.limit, a.tag, a.sets, a.modes, a.run)
 
 
 if __name__ == "__main__":

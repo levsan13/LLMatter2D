@@ -55,13 +55,32 @@ python paper/reproduce.py --llm lmstudio:<model>   # + RAG vs closed-book answer
    by repeating the command. After each model the answers table (`tables/answers.md`)
    is rebuilt.
 3. Record the model identifier, quantisation, context length and LM Studio version.
-   Repeat the runs to estimate the spread between runs.
+4. Repeat runs to estimate the spread between runs. Runs 2, 3, ... are written to
+   `answers_<set>_<tag>_run<N>.jsonl`; `--sets` and `--modes` restrict what is repeated.
+   For the manuscript, the curated questions are repeated in both modes and the database
+   questions with retrieval:
+
+   ```bash
+   python paper/reproduce.py --llm lmstudio:google/gemma-3-12b --tag gemma-3-12b --run 2
+   python paper/reproduce.py --llm lmstudio:google/gemma-3-12b --tag gemma-3-12b --run 3 \
+       --sets seed_questions
+   ```
+
+   `tables/answers.md` reports the mean over complete runs with the range in parentheses,
+   and lists how many complete runs enter each cell.
 
 Hardware used for the manuscript: the models were served by LM Studio on a workstation with
 one NVIDIA RTX PRO 6000 Blackwell GPU (96 GB of VRAM); the knowledge base, retrieval and
 grading ran on the CPU of a desktop computer that queried the server over the local network
 (through an SSH tunnel). Times per answer in `tables/answers.md` are wall-clock times
 measured at that client.
+
+Knowledge-base snapshot: `python paper/scripts/make_kb_snapshot.py` bundles the converted
+records (`data/raw/*.jsonl`) and both indexed knowledge bases into
+`dist/LLMatter2D-kb-<date>.zip`, with a README listing sources, licences (MC2D and
+JARVIS-DFT data are CC BY 4.0), citations and SHA-256 checksums. The zip is attached to the
+GitHub releases; unzip it in the repository root to reproduce the benchmark without
+downloading the databases again.
 
 Grading: numerical answers are graded on the first value with the expected unit
 (strict); the lenient criterion, any value within tolerance, is also reported because

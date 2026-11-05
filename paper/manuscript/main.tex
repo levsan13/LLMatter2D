@@ -71,7 +71,7 @@ dichalcogenides~\cite{Mak2010}, quantum spin Hall candidates such as silicene, g
 and stanene~\cite{KaneMele2005,Liu2011,Xu2013}, and intrinsic magnets~\cite{Huang2017}.
 High-throughput first-principles studies have catalogued thousands of exfoliable or
 hypothetical monolayers in open databases such as
-C2DB~\cite{Haastrup2018,Gjerding2021}, MC2D~\cite{Mounet2018},
+C2DB~\cite{Haastrup2018,Gjerding2021}, MC2D~\cite{Mounet2018,Campi2023},
 2DMatPedia~\cite{Zhou2019} and JARVIS-DFT~\cite{Choudhary2020}, and ARPES gives direct
 access to band dispersions, Fermi velocities and spin-orbit splittings~\cite{Damascelli2003}.
 
@@ -561,12 +561,15 @@ Archimedean candidates.}
 The code, the benchmark questions, the scripts that generate every figure and table, and all
 per-question outputs are available at \url{https://github.com/levsan13/LLMatter2D} under the
 MIT license and archived on Zenodo~\cite{LLMatter2D}
-(\href{https://doi.org/10.5281/zenodo.23779294}{doi:10.5281/zenodo.23779294}). The knowledge base was built on October 29,
-2026 from the MC2D OPTIMADE endpoint (\url{https://optimade.materialscloud.org/main/mc2d},
-2683 structures) and from the JARVIS-DFT 2D dataset distributed with \code{jarvis-tools}
-(file \code{d2-12-12-2022.json.zip}, 1103 records; figshare DOI 10.6084/m9.figshare.6815705).
-The 300 database questions, with their reference values and record identifiers, are part
-of the repository, so the benchmark can be repeated even if the databases change.
+(\href{https://doi.org/10.5281/zenodo.23779294}{doi:10.5281/zenodo.23779294}). The knowledge
+base was built on October 29, 2026 from the MC2D OPTIMADE endpoint
+(\url{https://optimade.materialscloud.org/main/mc2d}, 2683 structures) and from the JARVIS-DFT
+2D dataset distributed with \code{jarvis-tools} (file \code{d2-12-12-2022.json.zip}, 1103
+records)~\cite{JarvisFigshare}; both are distributed under the CC BY 4.0 license. The
+converted records and the two indexed knowledge bases are attached, under the same license
+and with checksums, to release \pending{v0.2.0} of the repository. The 300 database questions,
+with their reference values and record identifiers, are part of the repository, so the
+benchmark can be repeated even if the databases change.
 
 \begin{acknowledgments}
 \pending{funding and acknowledgments; disclosure of the use of AI-assisted tools in software

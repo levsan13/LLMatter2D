@@ -100,8 +100,10 @@ def grid(draw, legend_handles, path: Path, ylabel: str | None = None):
     legend_ax = axes.flat[len(lats)]
     legend_ax.axis("off")
     legend_ax.legend(handles=legend_handles, loc="center", frameon=False)
-    for ext in ("pdf", "png"):
-        fig.savefig(path.with_suffix(f".{ext}"), dpi=300)
+    # no creation dates in the files, so regenerating the figures gives identical bytes
+    fig.savefig(path.with_suffix(".pdf"), dpi=300,
+                metadata={"CreationDate": None, "ModDate": None})
+    fig.savefig(path.with_suffix(".png"), dpi=300, metadata={"Software": None})
     plt.close(fig)
 
 

@@ -2,10 +2,29 @@
  "llama-3.1-8b": {
   "database": {
    "rag": {
-    "n": 300,
-    "expected": 300,
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 0.9966666666666667,
+      "accuracy_lenient": 0.9966666666666667,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 1.4468,
+      "citation_valid": 1.0,
+      "citation_precise": 0.9983108108108109,
+      "uncited": 4
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 300,
     "accuracy": 0.9966666666666667,
+    "accuracy_min": 0.9966666666666667,
+    "accuracy_max": 0.9966666666666667,
+    "accuracy_lenient": 0.9966666666666667,
     "errors": 0,
     "refusals": 0,
     "seconds": 1.4468,
@@ -18,10 +37,26 @@
     }
    },
    "closed_book": {
-    "n": 300,
-    "expected": 300,
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 0.006666666666666667,
+      "accuracy_lenient": 0.006666666666666667,
+      "errors": 0,
+      "refusals": 294,
+      "seconds": 0.7117666666666667
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 300,
     "accuracy": 0.006666666666666667,
+    "accuracy_min": 0.006666666666666667,
+    "accuracy_max": 0.006666666666666667,
+    "accuracy_lenient": 0.006666666666666667,
     "errors": 0,
     "refusals": 294,
     "seconds": 0.7117666666666667,
@@ -33,10 +68,29 @@
   },
   "curated": {
    "rag": {
-    "n": 25,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 25,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 1.304,
+      "citation_valid": 1.0,
+      "citation_precise": 0.9090909090909091,
+      "uncited": 3
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 25,
     "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
     "seconds": 1.304,
@@ -56,10 +110,26 @@
     }
    },
    "closed_book": {
-    "n": 25,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 25,
+      "complete": true,
+      "accuracy": 0.48,
+      "accuracy_lenient": 0.52,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 4.7404
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 25,
     "accuracy": 0.48,
+    "accuracy_min": 0.48,
+    "accuracy_max": 0.48,
+    "accuracy_lenient": 0.52,
     "errors": 0,
     "refusals": 0,
     "seconds": 4.7404,
@@ -80,10 +150,29 @@
  "gemma-3-12b": {
   "database": {
    "rag": {
-    "n": 300,
-    "expected": 300,
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 2.0263666666666666,
+      "citation_valid": 1.0,
+      "citation_precise": 0.9727777777777777,
+      "uncited": 0
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 300,
     "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
     "seconds": 2.0263666666666666,
@@ -96,10 +185,26 @@
     }
    },
    "closed_book": {
-    "n": 300,
-    "expected": 300,
+    "runs": [
+     {
+      "run": 1,
+      "n": 300,
+      "complete": true,
+      "accuracy": 0.043333333333333335,
+      "accuracy_lenient": 0.12,
+      "errors": 0,
+      "refusals": 6,
+      "seconds": 22.659333333333333
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 300,
     "accuracy": 0.043333333333333335,
+    "accuracy_min": 0.043333333333333335,
+    "accuracy_max": 0.043333333333333335,
+    "accuracy_lenient": 0.12,
     "errors": 0,
     "refusals": 6,
     "seconds": 22.659333333333333,
@@ -111,10 +216,29 @@
   },
   "curated": {
    "rag": {
-    "n": 25,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 25,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 2.9828,
+      "citation_valid": 1.0,
+      "citation_precise": 0.968,
+      "uncited": 0
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 25,
     "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
     "seconds": 2.9828,
@@ -134,10 +258,26 @@
     }
    },
    "closed_book": {
-    "n": 25,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 25,
+      "complete": true,
+      "accuracy": 0.28,
+      "accuracy_lenient": 0.64,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 29.9748
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 25,
     "accuracy": 0.28,
+    "accuracy_min": 0.28,
+    "accuracy_max": 0.28,
+    "accuracy_lenient": 0.64,
     "errors": 0,
     "refusals": 0,
     "seconds": 29.9748,
@@ -158,10 +298,29 @@
  "gpt-oss-20b": {
   "curated": {
    "rag": {
-    "n": 25,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 25,
+      "complete": true,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 2.7448,
+      "citation_valid": 1.0,
+      "citation_precise": 0.9722222222222222,
+      "uncited": 1
+     }
+    ],
+    "n_runs": 1,
+    "n_partial": 0,
     "complete": true,
+    "n": 25,
     "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
     "seconds": 2.7448,
@@ -181,10 +340,26 @@
     }
    },
    "closed_book": {
-    "n": 14,
-    "expected": 25,
+    "runs": [
+     {
+      "run": 1,
+      "n": 14,
+      "complete": false,
+      "accuracy": 1.0,
+      "accuracy_lenient": 1.0,
+      "errors": 0,
+      "refusals": 0,
+      "seconds": 2.230714285714286
+     }
+    ],
+    "n_runs": 0,
+    "n_partial": 1,
     "complete": false,
+    "n": 14,
     "accuracy": 1.0,
+    "accuracy_min": 1.0,
+    "accuracy_max": 1.0,
+    "accuracy_lenient": 1.0,
     "errors": 0,
     "refusals": 0,
     "seconds": 2.230714285714286,
