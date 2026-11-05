@@ -5,6 +5,9 @@ All notable changes to LLMatter2D are listed here. The project follows
 
 ## 0.2.1 (2026-11-05)
 
+Archived on Zenodo: [10.5281/zenodo.23987386](https://doi.org/10.5281/zenodo.23987386)
+(source code and results; the knowledge-base snapshot is attached to the GitHub release).
+
 Results-only release (no code changes). The knowledge-base snapshot of 0.2.0
 (`LLMatter2D-kb-2026-10-29.zip`, unchanged) is attached again.
 
