@@ -457,7 +457,7 @@ that do not name a material.
 \label{sec:answers}
 
 \begin{table*}[t]
-\caption{Accuracy (\%) of pre-trained models served by LM Studio, each on one NVIDIA RTX PRO
+\caption{Accuracy (\%) of pre-trained models served by LM Studio on one NVIDIA RTX PRO
 6000 Blackwell GPU (96~GB of VRAM), with retrieval (RAG) and without it (closed book), on the
 25 curated and 300 database questions, graded on the first stated value; citation validity
 and precision (\%) of the retrieval-augmented answers to the database questions; and number
@@ -473,11 +473,10 @@ other cells are single runs.}
 
 We evaluated pre-trained, instruction-tuned models that run on a single workstation:
 Llama-3.1-8B-Instruct and Gemma-3-12B (4-bit Q4\_K\_M quantization) and gpt-oss-20b (MXFP4),
-served by LM Studio with default loading settings, each on one NVIDIA RTX PRO 6000 Blackwell
-GPU with 96~GB of VRAM (Llama and Gemma on one workstation, gpt-oss-20b on a second one with
-the same GPU). The knowledge base, retrieval and grading ran on the CPU of an ordinary desktop
-computer that queried the LM Studio servers over the local network; only the language models
-used the GPU. Each question was asked once with the retrieved records and once without them
+served by LM Studio with default loading settings on one NVIDIA RTX PRO 6000 Blackwell GPU
+with 96~GB of VRAM. The knowledge base, retrieval and grading ran on the CPU of an ordinary
+desktop computer that queried LM Studio over the local network; only the language models used
+the GPU. Each question was asked once with the retrieved records and once without them
 (Table~\ref{tab:answers}); to estimate the run-to-run spread, gpt-oss-20b answered the
 curated questions in three independent runs and the database questions with retrieval in
 two. The mean wall-clock time per answer to the database questions, measured at the client,
@@ -521,8 +520,7 @@ Larger models thus do memorize textbook values, but retrieval remains indispensa
 values that are specific to a database calculation: the model that answers 91\% of the
 curated questions from memory is correct for 7\% of the database questions.
 \pending{repeated runs of Llama and Gemma (runs 2 and 3 on the curated questions, run 2 with
-retrieval on the database questions) once the first workstation is available again; an
-earlier run of Llama on the curated questions gave 44\% closed-book accuracy, against 48\%
+retrieval on the database questions); an earlier run of Llama on the curated questions gave 44\% closed-book accuracy, against 48\%
 in Table~\ref{tab:answers}.}
 
 Several practical findings shaped the pipeline and its evaluation. First, when Llama was asked to cite record
@@ -608,7 +606,7 @@ base was built on October 29, 2026 from the MC2D OPTIMADE endpoint
 2D dataset distributed with \code{jarvis-tools} (file \code{d2-12-12-2022.json.zip}, 1103
 records)~\cite{JarvisFigshare}; both are distributed under the CC BY 4.0 license. The
 converted records and the two indexed knowledge bases are attached, under the same license
-and with checksums, to release \pending{v0.2.0} of the repository. The 300 database questions,
+and with checksums, to release v0.2.0 of the repository. The 300 database questions,
 with their reference values and record identifiers, are part of the repository, so the
 benchmark can be repeated even if the databases change.
 

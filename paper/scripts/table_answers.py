@@ -181,9 +181,8 @@ def to_markdown(summary: dict) -> str:
     lines += ["", "Accuracy in %: mean over complete runs, range over runs in parentheses when "
               "the runs differ. Curated: 25 questions; database: 300 questions generated from MC2D "
               "and JARVIS-DFT records. Retrieval: lexical embedder with exact-match bonus, k = 8, "
-              "numbered citations; temperature 0.2. Models served by LM Studio, each on one NVIDIA "
-              "RTX PRO 6000 Blackwell GPU (96 GB VRAM): Llama and Gemma on one workstation, "
-              "gpt-oss-20b on a second one with the same GPU. * = run not complete (n answers).",
+              "numbered citations; temperature 0.2. Models served by LM Studio on one NVIDIA "
+              "RTX PRO 6000 Blackwell GPU (96 GB VRAM). * = run not complete (n answers).",
               "",
               _runs_note(summary)]
     return "\n".join(lines) + "\n"

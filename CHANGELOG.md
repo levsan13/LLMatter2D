@@ -3,7 +3,11 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
-## Unreleased
+## 0.2.0 (2026-11-05)
+
+The release assets include `LLMatter2D-kb-2026-10-29.zip`: the converted MC2D and
+JARVIS-DFT records and both indexed knowledge bases (CC BY 4.0, with sources, citations and
+SHA-256 checksums), so the benchmark can be repeated without downloading the databases.
 
 ### Added
 - Benchmark of 300 questions generated from MC2D and JARVIS-DFT records
@@ -46,9 +50,9 @@ All notable changes to LLMatter2D are listed here. The project follows
 - `llmatter2d regrade` appends a single `| regraded` to the summary title.
 
 ### Results
-- gpt-oss-20b (second workstation, RTX PRO 6000 Blackwell): three runs on the curated
-  questions and two retrieval-augmented runs on the database questions; Table IV shows
-  repeated runs as a mean with the range where the runs differ.
+- gpt-oss-20b: three runs on the curated questions and two retrieval-augmented runs on the
+  database questions; Table IV shows repeated runs as a mean with the range where the runs
+  differ. All models were served by LM Studio on one NVIDIA RTX PRO 6000 Blackwell GPU.
 
 ## 0.1.1 (2026-10-28)
 
