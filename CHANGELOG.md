@@ -3,7 +3,10 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
-## Unreleased
+## 0.2.1 (2026-11-05)
+
+Results-only release (no code changes). The knowledge-base snapshot of 0.2.0
+(`LLMatter2D-kb-2026-10-29.zip`, unchanged) is attached again.
 
 ### Results
 - Repeated runs of Llama-3.1-8B and Gemma-3-12B: three runs on the curated questions and two
