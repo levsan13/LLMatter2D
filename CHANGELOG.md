@@ -3,6 +3,13 @@
 All notable changes to LLMatter2D are listed here. The project follows
 [semantic versioning](https://semver.org).
 
+## Unreleased
+
+### Results
+- Repeated runs of Llama-3.1-8B and Gemma-3-12B: three runs on the curated questions and two
+  retrieval-augmented runs on the database questions, as for gpt-oss-20b. Table IV gives the
+  mean with the range over runs for all three models.
+
 ## 0.2.0 (2026-11-05)
 
 Archived on Zenodo: [10.5281/zenodo.23982427](https://doi.org/10.5281/zenodo.23982427)

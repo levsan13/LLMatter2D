@@ -55,7 +55,7 @@ them, then JOSS for the software.
 - [ ] Extend the database questions to magnetism and stability
 - [x] Answers of Llama-3.1-8B and Gemma-3-12B in LM Studio, RAG vs closed-book (Table IV)
 - [x] gpt-oss-20b complete (three curated runs, two database RAG runs)
-- [ ] Repeat runs of Llama-3.1-8B and Gemma-3-12B to estimate their run-to-run spread
+- [x] Repeat runs of Llama-3.1-8B and Gemma-3-12B (three curated runs, two database RAG runs)
 - [ ] DFT validation of the top Archimedean candidates (relaxation, phonons, E_hull)
 - [x] Fig. 1 drawn in TikZ (check it renders as intended on Overleaf)
 - [x] Zenodo archive and DOI (concept DOI 10.5281/zenodo.23779294)

@@ -55,9 +55,10 @@ retrieval-augmented and closed-book answers of the same model with unit-aware gr
 citation metrics. With retrieval, locally served Llama-3.1-8B, Gemma-3-12B and gpt-oss-20b
 answer 99.7--100\% of the database questions correctly and cite valid records, against
 0.7--7.0\% without retrieval. On 25 curated questions about well-known monolayers,
-retrieval-augmented accuracy is 100\% for all three models, whereas closed-book accuracy
-ranges from 28\% (Gemma) to 91\% (gpt-oss-20b): the largest model recalls textbook values but
-still invents database-specific ones, and never declines to answer.
+retrieval-augmented accuracy is 99--100\% for all three models over three runs, whereas
+closed-book accuracy ranges from 31\% (Gemma) to 91\% (gpt-oss-20b): the largest model
+recalls textbook values but still invents database-specific ones, and never declines to
+answer.
 \end{abstract}
 
 \maketitle
@@ -462,10 +463,10 @@ that do not name a material.
 25 curated and 300 database questions, graded on the first stated value; citation validity
 and precision (\%) of the retrieval-augmented answers to the database questions; and number
 of closed-book answers to the database questions that decline to answer. Retrieval: lexical
-embedder with exact-match bonus, $k=8$, numbered citations; temperature 0.2. For
-gpt-oss-20b, the curated cells are means over three runs and the retrieval-augmented database
-cells means over two, with the range over runs in parentheses where the runs differ; all
-other cells are single runs.}
+embedder with exact-match bonus, $k=8$, numbered citations; temperature 0.2. The curated
+cells are means over three runs and the retrieval-augmented database cells means over two,
+with the range over runs in parentheses where the runs differ; the closed-book database cells
+are single runs.}
 \label{tab:answers}
 \footnotesize
 \input{answers}
@@ -476,25 +477,29 @@ Llama-3.1-8B-Instruct and Gemma-3-12B (4-bit Q4\_K\_M quantization) and gpt-oss-
 served by LM Studio with default loading settings on one NVIDIA RTX PRO 6000 Blackwell GPU
 with 96~GB of VRAM. The knowledge base, retrieval and grading ran on the CPU of an ordinary
 desktop computer that queried LM Studio over the local network; only the language models used
-the GPU. Each question was asked once with the retrieved records and once without them
-(Table~\ref{tab:answers}); to estimate the run-to-run spread, gpt-oss-20b answered the
-curated questions in three independent runs and the database questions with retrieval in
-two. The mean wall-clock time per answer to the database questions, measured at the client,
-was 1.4~s (Llama), 2.0~s (Gemma) and 0.5~s (gpt-oss-20b) with retrieval, and 0.7~s, 22.7~s
-and 0.5~s without it; the long closed-book times of Gemma reflect the lengthy explanations it
-writes when it has no records to draw on.
+the GPU. To estimate the run-to-run spread, each model answered the curated questions in
+three independent runs, with and without the retrieved records, and the database questions
+with retrieval in two; the 300 closed-book database questions were asked once
+(Table~\ref{tab:answers}). Wall-clock times per answer, measured at the client, varied by up
+to a factor of four between runs with the network connection and the load of the server and
+are therefore only indicative: with retrieval, answers took 0.5--1.9~s (Llama), 0.8--3.0~s
+(Gemma) and about 0.5~s (gpt-oss-20b); without it, Gemma needed 9--30~s per curated answer because
+of the lengthy explanations it writes when it has no records to draw on.
 
 With retrieval, all three models answer essentially every question correctly: 100\% of the
-curated questions (in each of the three runs of gpt-oss-20b), and 99.7\% (Llama) and 100\%
-(Gemma, and gpt-oss-20b in both runs) of the 300 database questions. All their citations
-point to retrieved records; 97--100\% of the citations in answers to the database questions,
-and 91--99\% for the curated questions, where several records describe the same compound,
-point to the records that hold the answer. gpt-oss-20b, however, gave no bracketed citation
-in 30 and 28 of its 300 database answers, referring instead to ``record 1'' in the text;
-these answers are all correct. The single error in 1325 retrieval-augmented answers
-illustrates the failure that the method labels are meant to prevent: asked for the TBmBJ gap
-of CeSe$_2$ in JARVIS-DFT, Llama returned the OptB88vdW value listed first in the same record
-(1.12~eV instead of 0.549~eV).
+curated questions in every run except one of Llama (24 of 25), and 99.7\% (Llama, in both
+runs) and 100\% (Gemma and gpt-oss-20b, in both runs) of the 300 database questions. All their
+citations point to retrieved records; 97--100\% of the citations in answers to the database
+questions, and 89--99\% for the curated questions, where several records describe the same
+compound, point to the records that hold the answer. gpt-oss-20b, however, gave no bracketed
+citation in 30 and 28 of its 300 database answers, referring instead to ``record 1'' in the
+text; these answers are all correct. The three errors in 2025 retrieval-augmented answers, all
+by Llama, illustrate the failure that the method labels are meant to prevent. Asked for the
+TBmBJ gap of CeSe$_2$ in JARVIS-DFT, Llama returned in both runs the OptB88vdW value listed
+first in the same record (1.12~eV instead of 0.549~eV); in the second run it even remarked
+that this value was the OptB88vdW one, but concluded that the records contain no TBmBJ gap.
+In one curated run it gave 1.7~eV, labeled as experimental, for the optical gap of WS$_2$
+(2.0~eV).
 
 Without retrieval the picture is reversed. On the database questions, Llama declines to
 answer 294 of the 300 closed-book questions (``I cannot verify\ldots'') and is correct in
@@ -506,22 +511,20 @@ value is graded. gpt-oss-20b never declines: it usually states a single value (i
 answers) and attributes it to the named database, often with an invented computational
 setting (``This value comes from the default HSE06 hybrid-functional calculations performed
 in MC2D''); 7.0\% of these values happen to fall within the tolerance. On the curated
-questions, which concern well-known monolayers, closed-book accuracy is 48\% (Llama), 28\%
-(Gemma) and 91\% (gpt-oss-20b; 88--96\% over three runs) with the strict criterion (52\%,
-64\% and 95\% with the lenient one). Band gaps by method are answered correctly in 4 (Llama)
-and 2 (Gemma) of 9 cases, and neither of these two models gives the spin-orbit gaps of the
-Xenes, the ARPES spin-orbit splittings of MoS$_2$ and MoSe$_2$, the list of quantum spin Hall
-Xenes or the Archimedean lattice of graphenylene. gpt-oss-20b answers nearly all of these
-questions correctly. Its errors are the HSE06 gap of phosphorene, for which it gives about
+questions, which concern well-known monolayers, closed-book accuracy over three runs is 55\%
+(Llama; 48--64\% per run), 31\% (Gemma; 28--36\%) and 91\% (gpt-oss-20b; 88--96\%) with the
+strict criterion (57\%, 56\% and 95\% with the lenient one). Over their three runs, Llama and
+Gemma answer 14 and 7 of the 27 questions on band gaps by method correctly and one of the 9
+on the spin-orbit gaps of the Xenes each; neither gives the ARPES spin-orbit splitting of
+MoSe$_2$ in any run, Llama names the quantum spin Hall Xenes in one run and Gemma in none,
+and no model identifies the Archimedean lattice of graphenylene in any run. gpt-oss-20b
+answers nearly all of the other questions correctly. Its errors are the HSE06 gap of phosphorene, for which it gives about
 2.0~eV instead of 1.5~eV (in two of three runs), a hedged range for the spin-orbit gap of
 stanene or germanene (one run each), and the Archimedean lattice of graphenylene, which it
 identifies in all three runs as the square-octagon tiling $4.8^2$ instead of $4.6.12$.
 Larger models thus do memorize textbook values, but retrieval remains indispensable for
 values that are specific to a database calculation: the model that answers 91\% of the
 curated questions from memory is correct for 7\% of the database questions.
-\pending{repeated runs of Llama and Gemma (runs 2 and 3 on the curated questions, run 2 with
-retrieval on the database questions); an earlier run of Llama on the curated questions gave 44\% closed-book accuracy, against 48\%
-in Table~\ref{tab:answers}.}
 
 Several practical findings shaped the pipeline and its evaluation. First, when Llama was asked to cite record
 identifiers directly, only 72.5\% of its citations on 50 database questions pointed to
@@ -536,11 +539,12 @@ brackets, all of which a naive parser misses; before bold values and typographic
 handled, 6 of its 1050 answers had been marked wrong although they were correct. Third,
 closed-book answers often state a range (e.g., 20--40~meV). Grading the lower bound, the
 midpoint or the whole range instead of the bound that carries the unit changes the curated
-closed-book accuracies to 48--56\% (Llama), 16--32\% (Gemma) and 89--92\% (gpt-oss-20b), and
+closed-book accuracies to 55--61\% (Llama), 21--33\% (Gemma) and 89--92\% (gpt-oss-20b), and
 the database ones by at most two answers, without changing the ranking of the models.
 Finally, without retrieved records gpt-oss-20b gave 46 of its 75 curated and 42 of its 300
 database answers in German, although the questions are in English and the prompt asks for
-answers in the language of the question; all its retrieval-augmented answers are in English.
+answers in the language of the question; all its retrieval-augmented answers, and all answers
+of the other two models, are in English.
 
 \subsection{Case study}
 
@@ -567,9 +571,9 @@ score is heuristic and ignores bond angles. The databases differ in functionals 
 convergence settings, and records of the same material from different sources are not yet
 merged automatically. The grading of numerical answers relies on pattern matching and the
 keyword grading of textual answers is crude. Finally, answers of language models vary
-between runs and models: over three runs, the closed-book accuracy of gpt-oss-20b on the
-curated questions varied by 8 percentage points, whereas its retrieval-augmented accuracy
-did not vary; repeated runs of the other two models are still to be made.
+between runs and models: over three runs, the closed-book accuracy on the curated questions
+varied by 16 (Llama), 8 (Gemma) and 8 (gpt-oss-20b) percentage points, whereas the
+retrieval-augmented accuracy changed by at most one answer.
 
 Natural extensions are Kane--Mele-type spin-orbit terms and $\mathbb Z_2$ invariants on the
 Archimedean lattices~\cite{KaneMele2005,CrastoDeLima2019}, longer-range hoppings derived

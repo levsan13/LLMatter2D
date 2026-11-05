@@ -108,9 +108,7 @@ python paper/manuscript/make_overleaf_zip.py   # -> paper/manuscript/LLMatter2D_
 * Figs. 2-3 and Tables I-II are final for the nearest-neighbour model and screening heuristic.
 * Table III is computed on the full knowledge base (MC2D + JARVIS-2D + seed, 3799 records,
   built on 2026-10-29). C2DB and 2DMatPedia can be added when their files are available.
-* Table IV (2026-11-05): all three models complete (25 + 300 questions, RAG and closed
-  book). gpt-oss-20b has three runs on the curated questions and two retrieval-augmented runs
-  on the database questions; an interrupted pilot run (39 answers) is kept in
-  `results/quick/seed_gpt-oss-20b_pilot.*` and is not part of the table. Still to do: runs 2 and 3 of Llama-3.1-8B and Gemma-3-12B on the curated
-  questions and run 2 with retrieval on the database questions, e.g.
-  `python paper/reproduce.py --llm lmstudio:meta-llama-3.1-8b-instruct --tag llama-3.1-8b --run 2 --sets seed_questions`.
+* Table IV (2026-11-05): complete for the three models. Each has three runs on the curated
+  questions (RAG and closed book), two retrieval-augmented runs on the database questions and
+  one closed-book run on them. An interrupted pilot run of gpt-oss-20b (39 answers) is kept in
+  `results/quick/seed_gpt-oss-20b_pilot.*` and is not part of the table.
