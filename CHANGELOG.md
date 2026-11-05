@@ -5,6 +5,9 @@ All notable changes to LLMatter2D are listed here. The project follows
 
 ## 0.2.0 (2026-11-05)
 
+Archived on Zenodo: [10.5281/zenodo.23982427](https://doi.org/10.5281/zenodo.23982427)
+(source code; the knowledge-base snapshot is attached to the GitHub release only).
+
 The release assets include `LLMatter2D-kb-2026-10-29.zip`: the converted MC2D and
 JARVIS-DFT records and both indexed knowledge bases (CC BY 4.0, with sources, citations and
 SHA-256 checksums), so the benchmark can be repeated without downloading the databases.

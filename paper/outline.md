@@ -54,11 +54,12 @@ them, then JOSS for the software.
       retrieval results (Table III)
 - [ ] Extend the database questions to magnetism and stability
 - [x] Answers of Llama-3.1-8B and Gemma-3-12B in LM Studio, RAG vs closed-book (Table IV)
-- [ ] Finish gpt-oss-20b (partial: curated RAG done, 14/25 curated closed-book, database
-      questions not run); repeat runs to estimate the run-to-run spread
+- [x] gpt-oss-20b complete (three curated runs, two database RAG runs)
+- [ ] Repeat runs of Llama-3.1-8B and Gemma-3-12B to estimate their run-to-run spread
 - [ ] DFT validation of the top Archimedean candidates (relaxation, phonons, E_hull)
 - [x] Fig. 1 drawn in TikZ (check it renders as intended on Overleaf)
 - [x] Zenodo archive and DOI (concept DOI 10.5281/zenodo.23779294)
-- [ ] Attach a snapshot of the knowledge base used in the paper (data/raw + kb, with the
-      MC2D and JARVIS-DFT attributions and licences) to the next release
+- [x] Snapshot of the knowledge base used in the paper (data/raw + kb, with the MC2D and
+      JARVIS-DFT attributions and licences) attached to the GitHub release v0.2.0
+      (Zenodo 10.5281/zenodo.23982427 archives the source code only)
 - [ ] Add the author's ORCID to CITATION.cff and .zenodo.json

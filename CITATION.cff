@@ -20,6 +20,9 @@ identifiers:
   - type: doi
     value: 10.5281/zenodo.23779294
     description: Concept DOI (all versions)
+  - type: doi
+    value: 10.5281/zenodo.23982427
+    description: Version 0.2.0
 license: MIT
 repository-code: "https://github.com/levsan13/LLMatter2D"
 keywords:
