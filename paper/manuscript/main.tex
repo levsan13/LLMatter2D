@@ -39,12 +39,12 @@ science, but when asked about specific compounds they produce plausible yet unsu
 numbers, conflate results obtained with different electronic-structure methods, and know
 little about the thousands of monolayers that exist only in computational databases. We
 present LLMatter2D, an open-source framework that grounds pre-trained LLMs, run locally, in
-curated and citable data on two-dimensional (2D) materials. Records from the C2DB, MC2D,
-2DMatPedia and JARVIS-DFT databases, Wannier tight-binding Hamiltonians and quantities
-extracted from angle-resolved photoemission spectroscopy (ARPES) are stored together with
-the method and provenance of every value and served to the model through a hybrid retrieval
-layer in which numerical constraints are enforced by metadata filters rather than by
-embedding similarity. On top of this layer, a generator based on the eleven Archimedean
+curated and citable data on two-dimensional (2D) materials. Connectors convert records from
+the C2DB, MC2D, 2DMatPedia and JARVIS-DFT databases, Wannier tight-binding Hamiltonians and
+quantities extracted from angle-resolved photoemission spectroscopy (ARPES) into a common
+format that keeps the method and provenance of every value; a hybrid retrieval layer, in
+which numerical constraints are enforced by metadata filters rather than by embedding
+similarity, serves these records to the model. On top of this layer, a generator based on the eleven Archimedean
 tilings proposes new 2D materials, characterizes them with nearest-neighbor tight binding,
 which recovers Dirac crossings, flat bands and quadratic band touchings, and exports
 structures for first-principles validation. On a knowledge base of 3799 monolayers from MC2D
@@ -186,11 +186,11 @@ local C2DB and 2DMatPedia files and for the JARVIS-DFT 2D dataset. The knowledge
 in this work contains 3799 records: 2683 MC2D monolayers (1458 with a computed band gap),
 1103 JARVIS-DFT monolayers (OptB88vdW gaps for all, TBmBJ gaps for 246 and HSE06 gaps for
 54, together with formation and exfoliation energies, energies above the hull, magnetic
-moments and average effective masses) and 13 curated records. A curated seed set of 13 well-known monolayers with literature values
-(graphene, hBN, four $1H$ transition-metal dichalcogenides, $1T$-TaS$_2$, phosphorene,
-silicene, germanene, stanene, CrI$_3$ and graphenylene)~\cite{CastroNeto2009,Mak2010,
-Liu2011,Xu2013,Huang2017,Bostwick2007,Miwa2015,Zhang2014,Elias2019,Song2013} serves for
-demonstrations and tests.
+moments and average effective masses) and 13 curated records of well-known monolayers with
+literature values (graphene, hBN, four $1H$ transition-metal dichalcogenides, $1T$-TaS$_2$,
+phosphorene, silicene, germanene, stanene, CrI$_3$ and graphenylene)~\cite{CastroNeto2009,
+Mak2010,Liu2011,Xu2013,Huang2017,Bostwick2007,Miwa2015,Zhang2014,Elias2019,Song2013}, which
+also serve for demonstrations and tests.
 
 \subsection{Tight-binding and photoemission data}
 
@@ -394,9 +394,8 @@ supercell of the truncated square tiling.
 On a synthetic map of an $n$-doped Dirac cone (Dirac point at $-0.4$~eV,
 $v_F=10^6$~m/s, Lorentzian momentum width $0.01$~\AA$^{-1}$), the MDC analysis recovers
 $v_F$ within $0.1\%$ using a $0.2$~eV window; on a noise-free parabolic band the fitted
-effective mass agrees with the input ($m^\ast=0.5\,m_e$) to better than $10^{-6}$.
-\pending{repeat with experimental data, e.g., graphene/SiC or epitaxial MoS$_2$, including noise
-and finite resolution.}
+effective mass agrees with the input ($m^\ast=0.5\,m_e$) to better than $10^{-6}$. Tests on
+measured maps are left for future work (Sec.~\ref{sec:discussion}).
 
 \subsection{Candidate materials}
 
@@ -546,13 +545,9 @@ database answers in German, although the questions are in English and the prompt
 answers in the language of the question; all its retrieval-augmented answers, and all answers
 of the other two models, are in English.
 
-\subsection{Case study}
-
-\pending{analysis of a monolayer absent from the knowledge base: descriptors, matched tiling,
-closest known materials and the model's report, compared with a DFT calculation.}
-
 % =====================================================================================
 \section{Discussion}
+\label{sec:discussion}
 % =====================================================================================
 
 LLMatter2D separates what a language model is good at, namely reading, comparing and
@@ -567,7 +562,8 @@ The present version has clear limitations. The tight-binding layer is restricted
 orbital per site and nearest-neighbor hopping, without spin-orbit coupling; real materials
 on these tilings will have additional orbitals, longer-range hoppings and distorted
 geometries. The first-guess structures use covalent radii and must be relaxed. The screening
-score is heuristic and ignores bond angles. The databases differ in functionals and
+score is heuristic and ignores bond angles. The extraction of photoemission observables has
+been tested on synthetic maps only. The databases differ in functionals and
 convergence settings, and records of the same material from different sources are not yet
 merged automatically. The grading of numerical answers relies on pattern matching and the
 keyword grading of textual answers is crude. Finally, answers of language models vary
@@ -579,7 +575,11 @@ Natural extensions are Kane--Mele-type spin-orbit terms and $\mathbb Z_2$ invari
 Archimedean lattices~\cite{KaneMele2005,CrastoDeLima2019}, longer-range hoppings derived
 from Wannier models~\cite{Liu2013TB}, ARPES data mined from the
 literature~\cite{Shang2025}, pre-screening with machine-learned interatomic potentials and an
-automated DFT loop that feeds validated candidates back into the knowledge base.
+automated DFT loop that feeds validated candidates back into the knowledge base. Two
+validations are also left for future work: the analysis of measured ARPES maps (e.g.,
+graphene on SiC or epitaxial MoS$_2$), with noise, finite resolution and matrix-element
+effects, and case studies of monolayers absent from the knowledge base, in which the
+analysis report of the model is compared with DFT calculations.
 
 % =====================================================================================
 \section{Conclusions}
@@ -618,8 +618,11 @@ with their reference values and record identifiers, are part of the repository, 
 benchmark can be repeated even if the databases change.
 
 \begin{acknowledgments}
-\pending{funding and acknowledgments; disclosure of the use of AI-assisted tools in software
-development and writing, following the journal policy.}
+The software, the analysis scripts and a first draft of this manuscript were developed with
+the assistance of Claude (Anthropic), a large language model used through the Claude Code
+tool. The author defined the project, reviewed the code, the results and the text, and takes
+full responsibility for the content of this article.
+\pending{funding agencies and grant numbers, if any.}
 \end{acknowledgments}
 
 \bibliography{references}

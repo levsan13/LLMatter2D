@@ -36,12 +36,13 @@ them, then JOSS for the software.
       hBN, Xenes, graphenylene).
    2. Benchmark: accuracy and citation quality for several pre-trained models, with and
       without retrieval (Table 3); failure analysis.
-   3. Case study: analysis of a monolayer absent from the knowledge base.
-   4. Discovery: ranked candidates, DFT relaxation, phonons and formation energy for the
+   3. Discovery: ranked candidates, DFT relaxation, phonons and formation energy for the
       top few; band structures with SOC compared with the tight-binding prediction.
 4. **Discussion**: limitations (nearest-neighbour model, crude first-guess geometries,
-   database biases, grading heuristics, LLM variability) and outlook (literature-mined
-   ARPES data, MLIP pre-screening, automated DFT loop).
+   ARPES extraction tested on synthetic maps only, database biases, grading heuristics, LLM
+   variability) and outlook (literature-mined ARPES data, MLIP pre-screening, automated DFT
+   loop; future work: measured ARPES maps and case studies of monolayers absent from the
+   knowledge base, compared with DFT).
 5. **Data and code availability**: code at https://github.com/levsan13/LLMatter2D
    (MIT), archived on Zenodo with a DOI; database versions and download dates; the
    benchmark questions and all per-question outputs are in the repository.
@@ -62,4 +63,8 @@ them, then JOSS for the software.
 - [x] Snapshot of the knowledge base used in the paper (data/raw + kb, with the MC2D and
       JARVIS-DFT attributions and licences) attached to the GitHub release v0.2.0
       (Zenodo 10.5281/zenodo.23982427 archives the source code only)
+- [x] Acknowledgments with the disclosure of AI-assisted development and writing
+- [ ] Funding agencies and grant numbers in the acknowledgments
 - [ ] Add the author's ORCID to CITATION.cff and .zenodo.json
+- Moved to future work: case study of a monolayer absent from the knowledge base; ARPES
+  extraction on measured maps
