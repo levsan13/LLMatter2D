@@ -35,30 +35,25 @@ photoemission data for the analysis and discovery of two-dimensional materials}
 
 \begin{abstract}
 Large language models (LLMs) are increasingly used as research assistants in materials
-science, but when asked about specific compounds they produce plausible yet unsupported
-numbers, conflate results obtained with different electronic-structure methods, and know
-little about the thousands of monolayers that exist only in computational databases. We
-present LLMatter2D, an open-source framework that grounds pre-trained LLMs, run locally, in
-curated and citable data on two-dimensional (2D) materials. Connectors convert records from
-the C2DB, MC2D, 2DMatPedia and JARVIS-DFT databases, Wannier tight-binding Hamiltonians and
-quantities extracted from angle-resolved photoemission spectroscopy (ARPES) into a common
-format that keeps the method and provenance of every value; a hybrid retrieval layer, in
-which numerical constraints are enforced by metadata filters rather than by embedding
-similarity, serves these records to the model. On top of this layer, a generator based on the eleven Archimedean
-tilings proposes new 2D materials, characterizes them with nearest-neighbor tight binding,
-which recovers Dirac crossings, flat bands and quadratic band touchings, and exports
-structures for first-principles validation. On a knowledge base of 3799 monolayers from MC2D
-and JARVIS-DFT, the hybrid retrieval places the record that holds the answer first for
-99.7--100\% of 300 database-derived questions, whereas the same embeddings without exact
-formula matching reach 25\% (lexical) and 74\% (dense). A benchmark compares
-retrieval-augmented and closed-book answers of the same model with unit-aware grading and
-citation metrics. With retrieval, locally served Llama-3.1-8B, Gemma-3-12B and gpt-oss-20b
-answer 99.7--100\% of the database questions correctly and cite valid records, against
-0.7--7.0\% without retrieval. On 25 curated questions about well-known monolayers,
-retrieval-augmented accuracy is 99--100\% for all three models over three runs, whereas
-closed-book accuracy ranges from 31\% (Gemma) to 91\% (gpt-oss-20b): the largest model
-recalls textbook values but still invents database-specific ones, and never declines to
-answer.
+science, but for specific compounds they produce plausible yet unsupported numbers, conflate
+electronic-structure methods, and know little about the thousands of monolayers that exist
+only in computational databases. We present LLMatter2D, an open-source framework that
+grounds locally run, pre-trained LLMs in curated and citable data on two-dimensional (2D)
+materials. Connectors for the C2DB, MC2D, 2DMatPedia and JARVIS-DFT databases, Wannier
+tight-binding Hamiltonians and angle-resolved photoemission (ARPES) observables keep the
+method and provenance of every value, and a hybrid retrieval layer enforces numerical
+constraints with metadata filters rather than embedding similarity. A generator based on the
+eleven Archimedean tilings proposes new 2D materials, characterizes them with
+nearest-neighbor tight binding (Dirac crossings, flat bands, quadratic band touchings) and
+exports structures for first-principles validation. On a knowledge base of 3799 monolayers
+from MC2D and JARVIS-DFT, retrieval places the record that holds the answer first for
+99.7--100\% of 300 database-derived questions, against 25\% (lexical) and 74\% (dense
+embeddings) without exact formula matching. With retrieval, locally served Llama-3.1-8B,
+Gemma-3-12B and gpt-oss-20b answer 99.7--100\% of these questions correctly and cite valid
+records, against 0.7--7.0\% without it. On 25 curated questions about well-known monolayers,
+retrieval-augmented accuracy is 99--100\%, whereas closed-book accuracy ranges from 31\%
+(Gemma) to 91\% (gpt-oss-20b): the largest model recalls textbook values but still invents
+database-specific ones, and never declines to answer.
 \end{abstract}
 
 \maketitle
